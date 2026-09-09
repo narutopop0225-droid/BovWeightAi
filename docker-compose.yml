@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: bovweight-db
+    restart: always
+    environment:
+      POSTGRES_USER: bovweight_user
+      POSTGRES_PASSWORD: bovweight_password
+      POSTGRES_DB: bovweight_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - bovweight_pgdata:/var/lib/postgresql/data
+
+  web:
+    build: 
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: bovweight-web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://bovweight_user:bovweight_password@db:5432/bovweight_db?schema=public
+    depends_on:
+      - db
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+      - /app/.next
+
+volumes:
+  bovweight_pgdata:
