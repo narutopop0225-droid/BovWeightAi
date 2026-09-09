@@ -115,7 +115,7 @@ function ScanContent() {
           timestamp: Date.now()
         };
 
-        await fetch('/api/animals', {
+        const res = await fetch('/api/animals', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -126,8 +126,17 @@ function ScanContent() {
             measurements: [newMeasurement]
           })
         });
-      } catch (err) {
+        
+        if (!res.ok) {
+          const errorData = await res.json();
+          alert(`เกิดข้อผิดพลาดในการบันทึก: ${errorData.error || res.statusText}`);
+          setShowSuccess(false);
+          return;
+        }
+      } catch (err: any) {
         console.error(err);
+        alert(`เกิดข้อผิดพลาดในการเชื่อมต่อ: ${err.message}`);
+        setShowSuccess(false);
       }
     } else if (!isSavingToFarm) {
       setShowSuccess(true);
