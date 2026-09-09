@@ -26,6 +26,11 @@ import crypto from 'crypto';
 function saveBase64Image(base64Str: string, prefix: string): string {
   if (!base64Str || !base64Str.startsWith('data:image')) return base64Str;
   
+  // On Vercel, file system is read-only. Save as base64 directly to DB.
+  if (process.env.VERCEL) {
+    return base64Str;
+  }
+
   try {
     const matches = base64Str.match(/^data:image\/([A-Za-z-+\/]+);base64,(.+)$/);
     if (!matches || matches.length !== 3) return base64Str;
