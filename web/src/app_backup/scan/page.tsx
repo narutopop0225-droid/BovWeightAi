@@ -35,9 +35,9 @@ function ScanContent() {
         videoRef.current.srcObject = stream;
       }
       // Force landscape if supported
-      if (screen.orientation && screen.orientation.lock) {
+      if (screen.orientation && (screen.orientation as any).lock) {
         try {
-          await screen.orientation.lock('landscape');
+          await (screen.orientation as any).lock('landscape');
         } catch (e) {
           console.log("Orientation lock failed", e);
         }

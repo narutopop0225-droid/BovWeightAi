@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Calculator, TrendingUp, Edit3, Check, Save, Coins, X, Plus, Minus, Search, Home, History, CircleUser, Camera, Star } from "lucide-react";
+import { ArrowLeft, Calculator, TrendingUp, Edit3, Check, Save, Coins, X, Plus, Minus, Search, Home, History, CircleUser, Camera, Star, Trash2 } from "lucide-react";
 
 export default function PricingCalculatorPage() {
   const [globalPrice, setGlobalPrice] = useState<number>(80);
