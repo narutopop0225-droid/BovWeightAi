@@ -53,12 +53,21 @@ function ScanContent() {
     if (videoRef.current && canvasRef.current) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      const MAX_WIDTH = 1280;
+      let targetWidth = video.videoWidth;
+      let targetHeight = video.videoHeight;
+      
+      if (targetWidth > MAX_WIDTH) {
+        targetHeight = (MAX_WIDTH / targetWidth) * targetHeight;
+        targetWidth = MAX_WIDTH;
+      }
+      
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg');
+        ctx.drawImage(video, 0, 0, targetWidth, targetHeight);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
         setBase64Image(dataUrl);
         setSelectedImage(dataUrl);
         stopCamera();
@@ -151,7 +160,27 @@ function ScanContent() {
       
       const reader = new FileReader();
       reader.onloadend = () => {
-        setBase64Image(reader.result as string);
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1280;
+          let targetWidth = img.width;
+          let targetHeight = img.height;
+          
+          if (targetWidth > MAX_WIDTH) {
+            targetHeight = (MAX_WIDTH / targetWidth) * targetHeight;
+            targetWidth = MAX_WIDTH;
+          }
+          
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+            setBase64Image(canvas.toDataURL('image/jpeg', 0.8));
+          }
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
 
