@@ -92,12 +92,10 @@ function ScanContent() {
 
   const handleSave = async () => {
     if (isSavingToFarm && result && !showSuccess) {
+      setIsSaving(true);
       try {
         const animalIdToSave = targetAnimalId || `M${Date.now()}`;
         const finalName = animalName || (targetAnimalId ? "ไม่มีชื่อ" : `${selectedType} #${animalIdToSave}`);
-        
-        // Disable further saves immediately
-        setShowSuccess(true);
         
         // Fetch existing attempt count if it's an existing animal
         let nextAttempt = 1;
@@ -138,13 +136,17 @@ function ScanContent() {
         if (!res.ok) {
           const errorData = await res.json();
           alert(`เกิดข้อผิดพลาดในการบันทึก: ${errorData.error || res.statusText}`);
-          setShowSuccess(false);
+          setIsSaving(false);
           return;
         }
+        
+        // Show success modal ONLY after successful save
+        setShowSuccess(true);
       } catch (err: any) {
         console.error(err);
         alert(`เกิดข้อผิดพลาดในการเชื่อมต่อ: ${err.message}`);
-        setShowSuccess(false);
+      } finally {
+        setIsSaving(false);
       }
     } else if (!isSavingToFarm) {
       setShowSuccess(true);
