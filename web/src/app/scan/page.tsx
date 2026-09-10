@@ -19,6 +19,7 @@ function ScanContent() {
   const [realGirth, setRealGirth] = useState("");
   const [animalName, setAnimalName] = useState(targetAnimalId ? targetAnimalId : "");
   const [isSavingToFarm, setIsSavingToFarm] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [selectedType, setSelectedType] = useState("โคเนื้อ");
 
   const [showCamera, setShowCamera] = useState(false);
