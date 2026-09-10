@@ -102,7 +102,7 @@ function ScanContent() {
         // Fetch existing attempt count if it's an existing animal
         let nextAttempt = 1;
         if (targetAnimalId) {
-          const res = await fetch(`/api/animals/${targetAnimalId}`);
+          const res = await fetch(`/api/animals/${targetAnimalId}`, { cache: 'no-store' });
           if (res.ok) {
             const data = await res.json();
             if (data.measurements) {

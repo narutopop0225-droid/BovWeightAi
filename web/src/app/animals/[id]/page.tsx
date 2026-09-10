@@ -29,7 +29,7 @@ export default function AnimalHistoryPage() {
 
   const loadData = async () => {
     try {
-      const res = await fetch(`/api/animals/${animalId}`);
+      const res = await fetch(`/api/animals/${animalId}`, { cache: 'no-store' });
       if (!res.ok) {
         // Fallback to localStorage if API fails or animal not found in DB
         const storedData = localStorage.getItem("mockAnimals");

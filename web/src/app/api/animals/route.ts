@@ -62,12 +62,26 @@ export async function POST(request: Request) {
 
     if (image) image = saveBase64Image(image, `animal_${id}`);
 
-    // Create or update animal and its measurements
-    const animal = await prisma.animal.upsert({
-      where: { id },
-      update: { name, type, age, image },
-      create: { id, name, type, age, image },
-    });
+    // Check if animal exists
+    const existingAnimal = await prisma.animal.findUnique({ where: { id } });
+    
+    let animal;
+    if (existingAnimal) {
+      animal = await prisma.animal.update({
+        where: { id },
+        data: {
+          image: image || existingAnimal.image, // Update image to latest scan
+          // Do not overwrite name and type with generic values if it's an existing animal
+          name: (name && name !== id) ? name : existingAnimal.name,
+          type: type || existingAnimal.type,
+          age: age || existingAnimal.age,
+        }
+      });
+    } else {
+      animal = await prisma.animal.create({
+        data: { id, name, type, age, image },
+      });
+    }
 
     if (measurements && measurements.length > 0) {
       for (const m of measurements) {

@@ -53,7 +53,7 @@ export default function HistoryPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await fetch('/api/animals');
+        const res = await fetch('/api/animals', { cache: 'no-store' });
         if (!res.ok) {
           // Fallback to localStorage
           const stored = localStorage.getItem('mockAnimals');

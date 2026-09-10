@@ -28,7 +28,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await fetch('/api/animals');
+        const res = await fetch('/api/animals', { cache: 'no-store' });
         if (!res.ok) {
           // Fallback if API fails or DB not ready
           const stored = localStorage.getItem('mockAnimals');
