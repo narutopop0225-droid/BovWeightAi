@@ -59,6 +59,11 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
     let { id, name, type, age, image, measurements } = data;
+    
+    // If top-level image is missing, use the scanImage from the first measurement to reduce payload size
+    if (!image && measurements && measurements.length > 0 && measurements[0].scanImage) {
+      image = measurements[0].scanImage;
+    }
 
     if (image) image = saveBase64Image(image, `animal_${id}`);
 

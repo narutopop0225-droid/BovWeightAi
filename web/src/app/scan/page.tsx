@@ -53,7 +53,7 @@ function ScanContent() {
     if (videoRef.current && canvasRef.current) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      const MAX_WIDTH = 1280;
+      const MAX_WIDTH = 600;
       let targetWidth = video.videoWidth;
       let targetHeight = video.videoHeight;
       
@@ -67,7 +67,7 @@ function ScanContent() {
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.drawImage(video, 0, 0, targetWidth, targetHeight);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
         setBase64Image(dataUrl);
         setSelectedImage(dataUrl);
         stopCamera();
@@ -131,7 +131,6 @@ function ScanContent() {
             id: animalIdToSave,
             name: finalName,
             type: selectedType,
-            image: base64Image || undefined,
             measurements: [newMeasurement]
           })
         });
@@ -163,7 +162,7 @@ function ScanContent() {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 1280;
+          const MAX_WIDTH = 600;
           let targetWidth = img.width;
           let targetHeight = img.height;
           
@@ -177,7 +176,7 @@ function ScanContent() {
           const ctx = canvas.getContext('2d');
           if (ctx) {
             ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-            setBase64Image(canvas.toDataURL('image/jpeg', 0.8));
+            setBase64Image(canvas.toDataURL('image/jpeg', 0.6));
           }
         };
         img.src = reader.result as string;
