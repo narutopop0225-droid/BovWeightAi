@@ -9,6 +9,7 @@ function ScanContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const targetAnimalId = searchParams.get("animalId");
+  const targetAnimalName = searchParams.get("animalName");
   
   const [showGuidelines, setShowGuidelines] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -17,7 +18,7 @@ function ScanContent() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [realGirth, setRealGirth] = useState("");
-  const [animalName, setAnimalName] = useState(targetAnimalId ? targetAnimalId : "");
+  const [animalName, setAnimalName] = useState(targetAnimalName || targetAnimalId || "");
   const [isSavingToFarm, setIsSavingToFarm] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [selectedType, setSelectedType] = useState("โคเนื้อ");
@@ -74,7 +75,7 @@ function ScanContent() {
         stopCamera();
         setResult(null);
         setRealGirth("");
-        setAnimalName("");
+        
       }
     }
   };
@@ -188,7 +189,7 @@ function ScanContent() {
 
       setResult(null); // Reset previous result
       setRealGirth("");
-      setAnimalName("");
+      
     }
   };
 
@@ -334,7 +335,7 @@ function ScanContent() {
               <span>ภาพสำหรับวิเคราะห์</span>
             </h2>
             {selectedImage && !isProcessing && (
-               <button onClick={() => { setSelectedImage(null); setResult(null); setRealGirth(""); setAnimalName(""); }} className="text-red-500 text-sm font-semibold hover:underline">เปลี่ยนรูป</button>
+               <button onClick={() => { setSelectedImage(null); setResult(null); setRealGirth("");  }} className="text-red-500 text-sm font-semibold hover:underline">เปลี่ยนรูป</button>
             )}
           </div>
 

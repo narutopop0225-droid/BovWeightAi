@@ -205,7 +205,7 @@ export default function AnimalHistoryPage() {
             <ArrowLeft size={22} className="text-white" />
           </Link>
           <div className="flex space-x-2">
-            <Link href={`/scan?animalId=${animal.id}`} className="p-2.5 bg-black/30 backdrop-blur-md rounded-full hover:bg-black/50 transition-all active:scale-95 border border-white/20">
+            <Link href={`/scan?animalId=${animal.id}&animalName=${encodeURIComponent(animal.name)}`} className="p-2.5 bg-black/30 backdrop-blur-md rounded-full hover:bg-black/50 transition-all active:scale-95 border border-white/20">
               <Camera size={22} className="text-white" />
             </Link>
             <button onClick={handleDeleteAnimal} className="p-2.5 bg-red-500/80 backdrop-blur-md rounded-full hover:bg-red-600 transition-all active:scale-95 border border-red-400/50">
@@ -383,7 +383,7 @@ export default function AnimalHistoryPage() {
             <h2 className="text-lg font-bold text-[#064e3b] flex items-center gap-2">
               <Calendar size={20} /> ประวัติการทำนายน้ำหนัก
             </h2>
-            <Link href={`/scan?animalId=${animal.id}`} className="text-sm text-emerald-600 font-bold bg-emerald-100 px-3 py-1.5 rounded-full hover:bg-emerald-200 transition-colors flex items-center gap-1">
+            <Link href={`/scan?animalId=${animal.id}&animalName=${encodeURIComponent(animal.name)}`} className="text-sm text-emerald-600 font-bold bg-emerald-100 px-3 py-1.5 rounded-full hover:bg-emerald-200 transition-colors flex items-center gap-1">
               <Plus size={14} /> เพิ่มข้อมูลใหม่
             </Link>
           </div>
