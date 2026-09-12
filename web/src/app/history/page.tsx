@@ -226,39 +226,45 @@ export default function HistoryPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#f3f0ea] pb-24 font-sans relative">
-      
-      {/* Top Decorative Red Bar */}
-      <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-red-400 via-rose-500 to-red-500 z-50 shadow-sm"></div>
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 pb-24 font-sans relative">
       
       {/* Header */}
-      <div className="pt-14 pb-4 px-6 relative z-30 flex flex-col">
-        <div className="flex justify-between items-center mb-6">
-          <Link href="/dashboard" className="text-gray-700 bg-white shadow-sm p-2 rounded-full transition-colors">
-            <ArrowLeft size={20} />
-          </Link>
-          <h1 className="text-gray-900 font-bold text-lg">ประวัติทั้งหมด</h1>
-          <button className="text-gray-700 bg-white shadow-sm p-2 rounded-full transition-colors">
-            <MoreHorizontal size={20} />
+      <header className="bg-gradient-to-r from-red-700 to-red-500 text-white p-4 shadow-lg sticky top-0 z-20">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-4">
+            <Link href="/dashboard" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all active:scale-95">
+              <ArrowLeft size={22} className="text-red-50" />
+            </Link>
+            <h1 className="text-xl font-bold tracking-wide">ประวัติทั้งหมด</h1>
+          </div>
+          <button className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all active:scale-95 text-red-50">
+            <MoreHorizontal size={22} />
           </button>
         </div>
 
         {/* Tabs for favorites */}
-        <div className="flex bg-white/40 p-1 rounded-xl w-full mb-6 shadow-sm border border-white/50 backdrop-blur-sm">
-          <button 
+        <div className="flex space-x-2 overflow-x-auto pb-1 scrollbar-hide">
+          <button
             onClick={() => setFilterType('all')}
-            className={`flex-1 py-1.5 rounded-lg text-[13px] font-bold transition-all ${filterType === 'all' ? 'bg-white text-[#144A29] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`px-4 py-1.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-sm flex items-center gap-1 ${
+              filterType === 'all' ? 'bg-white text-red-700' : 'bg-white/10 text-red-50 hover:bg-white/20 border border-white/20'
+            }`}
           >
             ทั้งหมด
           </button>
-          <button 
+          <button
             onClick={() => setFilterType('favorites')}
-            className={`flex-1 py-1.5 rounded-lg text-[13px] font-bold transition-all flex items-center justify-center gap-1 ${filterType === 'favorites' ? 'bg-white text-amber-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`px-4 py-1.5 rounded-full text-sm font-bold whitespace-nowrap transition-all shadow-sm flex items-center gap-1 ${
+              filterType === 'favorites' ? 'bg-white text-amber-600' : 'bg-white/10 text-red-50 hover:bg-white/20 border border-white/20'
+            }`}
           >
-            <Star size={14} className={filterType === 'favorites' ? 'fill-amber-500 text-amber-500' : ''} /> รายการโปรด
+            <Star size={14} className={filterType === 'favorites' ? 'fill-amber-500' : ''} />
+            รายการโปรด
           </button>
         </div>
+      </header>
 
+      <div className="p-4">
         {/* Month Selector & 'All Dates' Toggle */}
         <div className="flex items-center justify-between mb-4 relative z-50">
           <div className="relative">

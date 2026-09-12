@@ -890,22 +890,28 @@ export default function MedicinePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fcf9f9] text-[#1c1c1c] font-sans relative overflow-x-hidden pt-12 px-5">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-50 text-[#1c1c1c] font-sans relative overflow-x-hidden pb-20">
       {renderEditModal()}
       {renderConfirmModal()}
       {renderAnimalHistoryModal()}
       
-      <div className="flex justify-between items-center mb-6">
-        <Link href="/dashboard" className="text-gray-700 bg-white shadow-sm p-2.5 rounded-full transition-colors border border-gray-100">
-          <ArrowLeft size={20} />
-        </Link>
-        <h1 className="text-gray-900 font-bold text-lg flex items-center gap-2">
-           <Syringe size={20} className="text-rose-500" /> คำนวณยา/วัคซีน
-        </h1>
-        <div className="w-10"></div>
-      </div>
+      {/* Header */}
+      <header className="bg-gradient-to-r from-pink-600 to-rose-500 text-white p-4 shadow-lg sticky top-0 z-20">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-4">
+            <Link href="/dashboard" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all active:scale-95">
+              <ArrowLeft size={22} className="text-pink-50" />
+            </Link>
+            <h1 className="text-xl font-bold tracking-wide flex items-center gap-2">
+               <Syringe size={22} className="text-pink-50" /> คำนวณยา/วัคซีน
+            </h1>
+          </div>
+          <div className="w-10"></div>
+        </div>
+      </header>
 
-      {renderNotifications()}
+      <div className="pt-6 px-5">
+        {renderNotifications()}
 
       <div className="mb-2">
         <span className="text-xs font-bold text-gray-500 mb-2 block">การจัดการ</span>
@@ -985,5 +991,6 @@ export default function MedicinePage() {
       )}
 
     </div>
+      </div>
   );
 }
