@@ -309,14 +309,14 @@ export default function AnimalsPage() {
 
               {/* Stats */}
               {editingId !== animal.id && (
-                <div className="mt-auto flex justify-between items-center bg-white/50 rounded-xl p-2 px-3 border border-emerald-100/30">
-                  <div className="flex items-center gap-1.5">
-                    <Activity size={14} className="text-emerald-500" />
-                    <span className="text-[11px] font-bold text-gray-600">ชั่งไปแล้ว <span className="text-emerald-600 text-[12px]">{animal.history?.length || 0}</span> ครั้ง</span>
+                <div className="mt-auto flex justify-between items-center bg-white/60 rounded-xl p-2.5 px-3 border border-emerald-100/50">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-emerald-600/70 font-bold mb-0.5 flex items-center gap-1"><Activity size={10}/> น้ำหนักล่าสุด</span>
+                    <span className="font-black text-emerald-700 text-lg leading-none">{animal.latestWeight} <span className="text-[10px] text-emerald-600/60 font-medium">kg</span></span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Calendar size={12} className="text-gray-400" />
-                    <span className="text-[10px] text-gray-500 font-medium">ล่าสุด: {animal.history && animal.history.length > 0 ? animal.history[animal.history.length - 1].date : '-'}</span>
+                  <div className="flex flex-col items-end text-right">
+                    <span className="text-[10px] text-gray-400 flex items-center gap-1"><Calendar size={10}/> อัปเดตล่าสุด</span>
+                    <span className="text-[11px] font-bold text-gray-600">{animal.lastScanned}</span>
                   </div>
                 </div>
               )}
