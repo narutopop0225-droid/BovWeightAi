@@ -207,12 +207,17 @@ export default function AnimalHistoryPage() {
     };
   });
 
+  const latestRecord = activeHistory[0];
+  const latestCalWeight = latestRecord?.realGirth ? Number((Math.pow(Number(latestRecord.realGirth), 2) / 50).toFixed(1)) : null;
+  const latestActiveScanImage = activeHistory.find((h: any) => h.scanImage)?.scanImage;
+  const displayImage = latestActiveScanImage || animal.image;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f0fdf4] to-[#dcfce7] text-gray-800 pb-20 relative">
       {/* Header Image & Actions */}
       <div className="relative h-72 bg-[#064e3b]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={animal.image} alt={animal.name} className="w-full h-full object-cover opacity-80" />
+        <img src={displayImage} alt={animal.name} className="w-full h-full object-cover opacity-80" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#064e3b] via-transparent to-transparent"></div>
         
         {/* Top bar */}
@@ -288,15 +293,24 @@ export default function AnimalHistoryPage() {
       <div className="px-5 mt-6 space-y-6">
         
         {/* Stats Overview */}
-        <div className="glass-panel rounded-3xl p-5 border border-emerald-100 flex justify-around">
-          <div className="text-center">
-            <p className="text-xs text-gray-500 font-medium mb-1">น้ำหนักล่าสุด (AI)</p>
-            <p className="text-2xl font-bold text-[#064e3b]">{activeHistory[0]?.aiWeight || "-"} <span className="text-sm font-medium text-gray-400">KG</span></p>
+        <div className="glass-panel rounded-3xl p-5 border border-emerald-100 grid grid-cols-2 gap-y-6 gap-x-4">
+          <div className="text-center relative">
+            <p className="text-[11px] text-gray-500 font-medium mb-1">น้ำหนักล่าสุด {latestCalWeight ? '(วัดจริง)' : '(AI)'}</p>
+            <p className="text-2xl font-bold text-[#064e3b]">{latestCalWeight || latestRecord?.aiWeight || "-"} <span className="text-sm font-medium text-gray-400">KG</span></p>
+            <div className="absolute right-0 top-1/4 bottom-1/4 w-px bg-gray-200"></div>
           </div>
-          <div className="w-px bg-gray-200"></div>
           <div className="text-center">
-            <p className="text-xs text-gray-500 font-medium mb-1">ส่วนสูงล่าสุด (AI)</p>
-            <p className="text-2xl font-bold text-emerald-700">{activeHistory[0]?.aiHeight || "-"} <span className="text-sm font-medium text-gray-400">CM</span></p>
+            <p className="text-[11px] text-gray-500 font-medium mb-1">ส่วนสูงล่าสุด {latestRecord?.realHeight ? '(วัดจริง)' : '(AI)'}</p>
+            <p className="text-2xl font-bold text-emerald-700">{latestRecord?.realHeight || latestRecord?.aiHeight || "-"} <span className="text-sm font-medium text-gray-400">CM</span></p>
+          </div>
+          <div className="text-center relative">
+            <p className="text-[11px] text-gray-500 font-medium mb-1">รอบอกล่าสุด (AI)</p>
+            <p className="text-2xl font-bold text-blue-700">{latestRecord?.aiGirth || "-"} <span className="text-sm font-medium text-gray-400">CM</span></p>
+            <div className="absolute right-0 top-1/4 bottom-1/4 w-px bg-gray-200"></div>
+          </div>
+          <div className="text-center">
+            <p className="text-[11px] text-gray-500 font-medium mb-1">รอบอกล่าสุด (วัดจริง)</p>
+            <p className="text-2xl font-bold text-orange-600">{latestRecord?.realGirth || "-"} <span className="text-sm font-medium text-gray-400">CM</span></p>
           </div>
         </div>
 
