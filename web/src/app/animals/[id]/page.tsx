@@ -158,6 +158,39 @@ export default function AnimalHistoryPage() {
     }
   };
 
+  const handlePermanentDeleteRecord = async (id: string, attempt: number) => {
+    if (window.confirm('คุณต้องการลบประวัตินี้แบบถาวรใช่หรือไม่? (ไม่สามารถกู้คืนได้)')) {
+      const updatedHistory = animal.history.filter((record: any) => record.id !== id && record.attempt !== attempt);
+      setAnimal({ ...animal, history: updatedHistory });
+      
+      if (id) {
+        try {
+          await fetch(`/api/measurements/${id}`, { method: 'DELETE' });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  };
+    const updatedHistory = animal.history.map((record: any) => {
+      if (record.id === id || record.attempt === attempt) return { ...record, isDeleted: false };
+      return record;
+    });
+    setAnimal({ ...animal, history: updatedHistory });
+    
+    if (id) {
+      try {
+        await fetch(`/api/measurements/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isDeleted: false })
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
   const handleDeleteAnimal = async () => {
     if (window.confirm(`คุณต้องการย้ายข้อมูลของ "${animal.name}" ไปที่ถังขยะใช่หรือไม่? (สามารถกู้คืนได้ภายหลัง)`)) {
       try {
@@ -531,6 +564,12 @@ export default function AnimalHistoryPage() {
                       className="px-3 py-1.5 bg-white text-red-600 font-bold text-xs rounded-xl hover:bg-red-100 transition-colors border border-red-200 shadow-sm"
                     >
                       กู้คืนข้อมูล
+                    </button>
+                    <button 
+                      onClick={() => handlePermanentDeleteRecord(record.id, record.attempt)}
+                      className="px-3 py-1.5 bg-white text-gray-500 font-bold text-xs rounded-xl hover:bg-gray-100 hover:text-gray-700 transition-colors border border-gray-200 shadow-sm ml-2"
+                    >
+                      ลบถาวร
                     </button>
                   </div>
                 ))}

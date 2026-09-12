@@ -219,8 +219,19 @@ export default function PricingCalculatorPage() {
       if (!res.ok) throw new Error('Failed to restore');
       setHistoryRecords(prev => prev.map(r => r.id === id ? { ...r, isDeleted: false } : r));
     } catch (err) {
-      console.error(err);
       alert('เกิดข้อผิดพลาดในการกู้คืน');
+    }
+  };
+
+  const handlePermanentDeleteHistory = async (id: string, name: string) => {
+    if (window.confirm(`คุณต้องการลบประวัติการชั่งของ "${name}" แบบถาวรใช่หรือไม่? (ไม่สามารถกู้คืนได้)`)) {
+      try {
+        const res = await fetch(`/api/measurements/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed to permanent delete');
+        setHistoryRecords(prev => prev.filter(r => r.id !== id));
+      } catch (err) {
+        alert('เกิดข้อผิดพลาดในการลบถาวร');
+      }
     }
   };
 
@@ -536,12 +547,20 @@ export default function PricingCalculatorPage() {
                       <h3 className="font-bold text-rose-900/70 text-[14px] leading-tight truncate decoration-rose-300 line-through">{record.animalName || 'ไม่ระบุชื่อ'}</h3>
                       <p className="text-[11px] text-rose-400/80 font-medium">{record.aiWeight} kg • {dateString}</p>
                     </div>
-                    <button 
-                      onClick={() => handleRestoreHistory(record.id)}
-                      className="text-[12px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full hover:bg-emerald-100 transition-colors shadow-sm whitespace-nowrap ml-2"
-                    >
-                      กู้คืน
-                    </button>
+                    <div className="flex">
+                      <button 
+                        onClick={() => handleRestoreHistory(record.id)}
+                        className="text-[12px] font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full hover:bg-emerald-100 transition-colors shadow-sm whitespace-nowrap"
+                      >
+                        กู้คืน
+                      </button>
+                      <button 
+                        onClick={() => handlePermanentDeleteHistory(record.id, record.animalName)}
+                        className="text-[12px] font-bold text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full hover:bg-gray-100 hover:text-gray-700 transition-colors shadow-sm whitespace-nowrap ml-2"
+                      >
+                        ลบถาวร
+                      </button>
+                    </div>
                   </div>
                 );
               })}

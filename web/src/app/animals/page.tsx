@@ -165,6 +165,18 @@ export default function AnimalsPage() {
     }
   };
 
+  const handlePermanentDelete = async (id: string) => {
+    if (window.confirm('คุณต้องการลบข้อมูลสัตว์ตัวนี้แบบถาวรใช่หรือไม่? (ประวัติการชั่งทั้งหมดจะถูกลบและไม่สามารถกู้คืนได้)')) {
+      try {
+        const res = await fetch(`/api/animals/${id}?permanent=true`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed to delete permanently');
+        setAnimals(prev => prev.filter(a => a.id !== id));
+      } catch (err) {
+        alert('เกิดข้อผิดพลาดในการลบถาวร');
+      }
+    }
+  };
+
   const filteredAnimals = animals.filter(a => {
     const matchesSearch = a.name.includes(search) || a.id.includes(search);
     const matchesFilter = filter === "ทั้งหมด" ? true : (filter === "รายการโปรด" ? a.isFavorite : a.type === filter);
@@ -370,12 +382,20 @@ export default function AnimalsPage() {
                     <h3 className="font-bold text-rose-900/70 line-through decoration-rose-300">{animal.name}</h3>
                     <p className="text-xs text-rose-400/80 font-medium">ID: {animal.id}</p>
                   </div>
-                  <button 
-                    onClick={() => handleRestore(animal.id)}
-                    className="text-sm font-bold text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full hover:bg-emerald-100 transition-colors shadow-sm"
-                  >
-                    กู้คืน
-                  </button>
+                  <div className="flex">
+                    <button 
+                      onClick={() => handleRestore(animal.id)}
+                      className="text-sm font-bold text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full hover:bg-emerald-100 transition-colors shadow-sm"
+                    >
+                      กู้คืน
+                    </button>
+                    <button 
+                      onClick={() => handlePermanentDelete(animal.id)}
+                      className="text-sm font-bold text-gray-500 bg-gray-50 px-4 py-2 rounded-full hover:bg-gray-100 transition-colors shadow-sm ml-2"
+                    >
+                      ลบถาวร
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

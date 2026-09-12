@@ -29,12 +29,22 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+    const url = new URL(request.url);
+    const permanent = url.searchParams.get("permanent") === "true";
     
-    // Soft delete the animal
-    await prisma.animal.update({
-      where: { id },
-      data: { isDeleted: true }
-    });
+    if (permanent) {
+      // Hard delete
+      // Note: Cascade deletion is needed if there are related measurements, but Prisma schema might not have it.
+      // Manually delete measurements first just in case.
+      await prisma.measurement.deleteMany({ where: { animalId: id } });
+      await prisma.animal.delete({ where: { id } });
+    } else {
+      // Soft delete the animal
+      await prisma.animal.update({
+        where: { id },
+        data: { isDeleted: true }
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

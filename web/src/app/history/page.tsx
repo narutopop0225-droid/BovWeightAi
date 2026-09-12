@@ -174,6 +174,18 @@ export default function HistoryPage() {
     }
   };
 
+  const handlePermanentDelete = async (record: any) => {
+    if (window.confirm(`คุณต้องการลบประวัติการชั่งของ "${record.animalName}" แบบถาวรใช่หรือไม่? (ไม่สามารถกู้คืนได้)`)) {
+      setHistoryRecords(prev => prev.filter(rec => rec.id !== record.id));
+      
+      try {
+        await fetch(`/api/measurements/${record.id}`, { method: 'DELETE' });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
   const activeRecords = historyRecords.filter(rec => !rec.isDeleted);
   let displayRecords = filterType === 'favorites' ? activeRecords.filter(rec => rec.isFavorite) : activeRecords;
 
@@ -449,12 +461,20 @@ export default function HistoryPage() {
                         <p className="text-xs text-red-400/80 mt-0.5">{record.time}</p>
                       </div>
                     </div>
-                    <button 
-                      onClick={() => handleRestore(record)}
-                      className="px-3 py-1.5 bg-white text-red-600 font-bold text-xs rounded-xl hover:bg-red-50 transition-colors border border-red-200 shadow-sm whitespace-nowrap ml-2"
-                    >
-                      กู้คืน
-                    </button>
+                    <div className="flex">
+                      <button 
+                        onClick={() => handleRestore(record)}
+                        className="px-3 py-1.5 bg-white text-red-600 font-bold text-xs rounded-xl hover:bg-red-50 transition-colors border border-red-200 shadow-sm whitespace-nowrap"
+                      >
+                        กู้คืน
+                      </button>
+                      <button 
+                        onClick={() => handlePermanentDelete(record)}
+                        className="px-3 py-1.5 bg-white text-gray-500 font-bold text-xs rounded-xl hover:bg-gray-100 hover:text-gray-700 transition-colors border border-gray-200 shadow-sm whitespace-nowrap ml-2"
+                      >
+                        ลบถาวร
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
