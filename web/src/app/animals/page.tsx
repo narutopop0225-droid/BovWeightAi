@@ -233,83 +233,93 @@ export default function AnimalsPage() {
           <Link 
             href={`/animals/${animal.id}`}
             key={animal.id}
-            className="block bg-white rounded-3xl p-3 shadow-[0_5px_15px_rgba(4,120,87,0.08)] border border-gray-100 hover:shadow-[0_8px_25px_rgba(4,120,87,0.12)] hover:-translate-y-0.5 transition-all group relative overflow-hidden"
+            className="block bg-gradient-to-br from-emerald-50/80 to-teal-50/50 rounded-[28px] p-2.5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-emerald-100/50 flex flex-col relative overflow-hidden group hover:shadow-md transition-shadow cursor-pointer"
           >
-            <div className="flex items-center space-x-4">
-              {/* Thumbnail */}
-              <div className="relative w-24 h-24 rounded-2xl overflow-hidden shrink-0 shadow-inner border border-gray-100">
-                <img src={animal.image} alt={animal.name} className="w-full h-full object-cover" />
-                <div className="absolute top-0 left-0 bg-[#064e3b]/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-br-lg">
-                  {animal.type}
-                </div>
-                
-                {/* Favorite Star */}
-                <div 
-                  onClick={(e) => toggleFavorite(e, animal.id)}
-                  className={`absolute bottom-1 right-1 w-7 h-7 rounded-full flex items-center justify-center shadow-sm backdrop-blur-md transition-colors z-10 cursor-pointer ${animal.isFavorite ? 'bg-amber-100' : 'bg-white/80 hover:bg-white'}`}
-                >
-                   <Star size={14} className={animal.isFavorite ? "text-amber-500 fill-amber-500" : "text-gray-400"} />
-                </div>
+            {/* Top: Big Image */}
+            <div className="relative w-full h-40 md:h-48 rounded-[20px] overflow-hidden shrink-0 bg-gray-100 shadow-sm border border-white/60 mb-3">
+              <img src={animal.image} alt={animal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              
+              {/* Type Badge */}
+              <div className="absolute top-0 left-0 bg-[#064e3b]/80 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1.5 rounded-br-[16px] shadow-sm">
+                {animal.type}
               </div>
+              
+              {/* Favorite Star Icon */}
+              <div 
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(e, animal.id); }}
+                className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-sm backdrop-blur-md transition-colors z-10 cursor-pointer ${animal.isFavorite ? 'bg-amber-100' : 'bg-white/80 hover:bg-white'}`}
+              >
+                <Star size={16} className={animal.isFavorite ? "text-amber-500 fill-amber-500" : "text-gray-400"} />
+              </div>
+            </div>
 
-              {/* Info */}
-              <div className="flex-1 min-w-0 py-1">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1 mr-2">
-                    {editingId === animal.id ? (
-                      <div className="flex flex-col space-y-2 mb-2 w-full pr-2">
-                        <input 
-                          type="text" 
-                          value={editName}
-                          onChange={(e) => setEditName(e.target.value)}
-                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                          className="w-full px-3 py-2 text-sm border border-emerald-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white text-[#064e3b] font-bold rounded-lg shadow-sm"
-                          autoFocus
-                          placeholder="ชื่อสัตว์..."
-                        />
-                        <div className="flex space-x-2">
-                          <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleSaveEdit(e); }} className="flex-1 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-md hover:bg-emerald-700 transition-colors shadow-sm">
-                            เสร็จสิ้น
-                          </button>
-                          <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditingId(null); }} className="flex-1 py-1.5 bg-gray-100 text-gray-700 text-xs font-bold rounded-md hover:bg-gray-200 transition-colors shadow-sm">
-                            ยกเลิก
-                          </button>
-                        </div>
+            {/* Bottom: Info & Stats */}
+            <div className="flex-1 flex flex-col justify-between px-1.5 pb-1">
+              {/* Header: Name and Actions */}
+              <div className="flex justify-between items-start mb-3">
+                <div className="min-w-0 pr-2 w-full">
+                  {editingId === animal.id ? (
+                    <div className="flex flex-col space-y-2 mb-2 w-full pr-2" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                      <input 
+                        type="text" 
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border border-emerald-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white text-[#064e3b] font-bold rounded-lg shadow-sm"
+                        autoFocus
+                        placeholder="ชื่อสัตว์..."
+                      />
+                      <div className="flex space-x-2">
+                        <button onClick={(e) => handleSaveEdit(e)} className="flex-1 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-md hover:bg-emerald-700 transition-colors shadow-sm">
+                          เสร็จสิ้น
+                        </button>
+                        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditingId(null); }} className="flex-1 py-1.5 bg-gray-100 text-gray-700 text-xs font-bold rounded-md hover:bg-gray-200 transition-colors shadow-sm">
+                          ยกเลิก
+                        </button>
                       </div>
-                    ) : (
-                      <h3 className="font-bold text-lg text-[#064e3b] truncate pr-2">{editingId === animal.id ? editName : animal.name}</h3>
-                    )}
-                    <p className="text-xs text-gray-500 font-medium mt-0.5">
-                      รหัส: {animal.id} <span className="mx-1">•</span> อายุ: {animal.age}
-                    </p>
-                  </div>
-                  {editingId !== animal.id && (
-                    <div className="flex items-center space-x-1">
-                      <button className="text-gray-400 hover:text-emerald-600 transition-colors p-1" onClick={(e) => { 
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setEditingId(animal.id);
-                        setEditName(animal.name);
-                      }}>
-                        <Edit3 size={18} />
-                      </button>
-                      <button className="text-gray-400 hover:text-red-500 transition-colors p-1" onClick={(e) => handleDelete(e, animal.id, animal.name)}>
-                        <Trash2 size={18} />
-                      </button>
                     </div>
+                  ) : (
+                    <>
+                      <h3 className="font-bold text-[16px] leading-tight text-emerald-950 truncate">{animal.name}</h3>
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <p className="text-[12px] text-emerald-700 font-bold font-mono bg-emerald-200/40 px-2.5 py-0.5 rounded-full">#{animal.id}</p>
+                        <span className="w-1 h-1 bg-emerald-300 rounded-full"></span>
+                        <span className="text-[10px] text-emerald-600/70 font-medium">อายุ: {animal.age}</span>
+                      </div>
+                    </>
                   )}
                 </div>
 
-                <div className="mt-3 flex items-end justify-between">
-                  <div>
-                    <p className="text-[10px] text-gray-400 mb-0.5">น้ำหนักล่าสุด</p>
-                    <p className="font-bold text-[#047857] text-lg leading-none">{animal.latestWeight} <span className="text-xs text-gray-500 font-medium">kg</span></p>
+                {/* Action Buttons */}
+                {editingId !== animal.id && (
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button className="text-gray-400 hover:text-emerald-600 hover:bg-emerald-100/50 bg-white/50 backdrop-blur-sm rounded-full p-2 transition-colors border border-emerald-100/50" onClick={(e) => { 
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setEditingId(animal.id);
+                      setEditName(animal.name);
+                    }}>
+                      <Edit3 size={14} />
+                    </button>
+                    <button className="text-rose-400 hover:text-rose-600 hover:bg-rose-100/50 bg-white/50 backdrop-blur-sm rounded-full p-2 transition-colors border border-rose-100/50" onClick={(e) => handleDelete(e, animal.id, animal.name)}>
+                      <Trash2 size={14} />
+                    </button>
                   </div>
-                  <p className="text-[10px] text-gray-400 text-right">
-                    อัปเดต:<br/>{animal.lastScanned}
-                  </p>
-                </div>
+                )}
               </div>
+
+              {/* Stats */}
+              {editingId !== animal.id && (
+                <div className="mt-auto flex justify-between items-center bg-white/50 rounded-xl p-2 px-3 border border-emerald-100/30">
+                  <div className="flex items-center gap-1.5">
+                    <Activity size={14} className="text-emerald-500" />
+                    <span className="text-[11px] font-bold text-gray-600">ชั่งไปแล้ว <span className="text-emerald-600 text-[12px]">{animal.history?.length || 0}</span> ครั้ง</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Calendar size={12} className="text-gray-400" />
+                    <span className="text-[10px] text-gray-500 font-medium">ล่าสุด: {animal.history && animal.history.length > 0 ? animal.history[animal.history.length - 1].date : '-'}</span>
+                  </div>
+                </div>
+              )}
             </div>
             
             <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#047857] to-emerald-300 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
