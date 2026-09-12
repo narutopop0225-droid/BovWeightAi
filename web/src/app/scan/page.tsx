@@ -536,9 +536,22 @@ function ScanContent() {
 
                 {/* Save Button */}
                 {isSavingToFarm ? (
-                  <button onClick={handleSave} className="w-full py-4 bg-[#1e3a8a] text-white font-bold text-lg rounded-2xl hover:bg-[#1d4ed8] transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2 mt-4">
-                    <Save size={20} />
-                    บันทึกข้อมูลลงระบบฟาร์ม
+                  <button 
+                    onClick={handleSave} 
+                    disabled={isSaving}
+                    className={`w-full py-4 text-white font-bold text-lg rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 mt-4 ${isSaving ? 'bg-[#1e3a8a]/70 cursor-not-allowed' : 'bg-[#1e3a8a] hover:bg-[#1d4ed8] active:scale-[0.98]'}`}
+                  >
+                    {isSaving ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        กำลังบันทึก... กรุณารอสักครู่
+                      </>
+                    ) : (
+                      <>
+                        <Save size={20} />
+                        บันทึกข้อมูลลงระบบฟาร์ม
+                      </>
+                    )}
                   </button>
                 ) : (
                   <button onClick={handleSave} className="w-full py-4 bg-gray-600 text-white font-bold text-lg rounded-2xl hover:bg-gray-700 transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2 mt-4">
