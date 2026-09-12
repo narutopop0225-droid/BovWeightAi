@@ -85,7 +85,7 @@ export default function AnimalHistoryPage() {
 
   const handleSaveHistory = async (id: string, attempt: number) => {
     const updatedHistory = animal.history.map((record: any) => {
-      if (record.id === id || record.attempt === attempt) {
+      if (record.id === id) {
         return {
           ...record,
           realGirth: editGirth ? Number(editGirth) : null,
@@ -119,7 +119,7 @@ export default function AnimalHistoryPage() {
   const handleDeleteRecord = async (id: string, attempt: number) => {
     if (window.confirm('คุณต้องการลบประวัตินี้ใช่หรือไม่? (สามารถกู้คืนได้ภายหลัง)')) {
       const updatedHistory = animal.history.map((record: any) => {
-        if (record.id === id || record.attempt === attempt) return { ...record, isDeleted: true };
+        if (record.id === id) return { ...record, isDeleted: true };
         return record;
       });
       setAnimal({ ...animal, history: updatedHistory });
@@ -140,7 +140,7 @@ export default function AnimalHistoryPage() {
 
   const handleRestoreRecord = async (id: string, attempt: number) => {
     const updatedHistory = animal.history.map((record: any) => {
-      if (record.id === id || record.attempt === attempt) return { ...record, isDeleted: false };
+      if (record.id === id) return { ...record, isDeleted: false };
       return record;
     });
     setAnimal({ ...animal, history: updatedHistory });
@@ -160,7 +160,7 @@ export default function AnimalHistoryPage() {
 
   const handlePermanentDeleteRecord = async (id: string, attempt: number) => {
     if (window.confirm('คุณต้องการลบประวัตินี้แบบถาวรใช่หรือไม่? (ไม่สามารถกู้คืนได้)')) {
-      const updatedHistory = animal.history.filter((record: any) => record.id !== id && record.attempt !== attempt);
+      const updatedHistory = animal.history.filter((record: any) => record.id !== id);
       setAnimal({ ...animal, history: updatedHistory });
       
       if (id) {
@@ -173,7 +173,7 @@ export default function AnimalHistoryPage() {
     }
   };
     const updatedHistory = animal.history.map((record: any) => {
-      if (record.id === id || record.attempt === attempt) return { ...record, isDeleted: false };
+      if (record.id === id) return { ...record, isDeleted: false };
       return record;
     });
     setAnimal({ ...animal, history: updatedHistory });
@@ -209,8 +209,9 @@ export default function AnimalHistoryPage() {
 
   if (!animal) return <div className="min-h-screen bg-[#f0fdf4] flex items-center justify-center">กำลังโหลดข้อมูล...</div>;
 
-  const activeHistory = animal.history.filter((h: any) => !h.isDeleted);
-  const deletedHistory = animal.history.filter((h: any) => h.isDeleted);
+  const computedHistory = animal.history ? [...animal.history].sort((a: any, b: any) => a.timestamp - b.timestamp).map((h, i) => ({ ...h, attempt: i + 1 })).sort((a: any, b: any) => b.timestamp - a.timestamp) : [];
+  const activeHistory = computedHistory.filter((h: any) => !h.isDeleted);
+  const deletedHistory = computedHistory.filter((h: any) => h.isDeleted);
 
   const chartData = [...activeHistory].reverse().map((h: any) => {
     const calWeight = h.realGirth ? Number((Math.pow(Number(h.realGirth), 2) / 50).toFixed(1)) : null;

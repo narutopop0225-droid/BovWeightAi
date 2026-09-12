@@ -20,7 +20,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     if (!animal) {
       return NextResponse.json({ error: 'Animal not found' }, { status: 404 });
     }
-    return NextResponse.json(animal);
+    if (animal.measurements && animal.measurements.length > 0) { animal.measurements.sort((a, b) => a.timestamp - b.timestamp); animal.measurements.forEach((m, idx) => { m.attempt = idx + 1; }); animal.measurements.sort((a, b) => b.timestamp - a.timestamp); } return NextResponse.json(animal);
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
