@@ -172,24 +172,6 @@ export default function AnimalHistoryPage() {
       }
     }
   };
-    const updatedHistory = animal.history.map((record: any) => {
-      if (record.id === id) return { ...record, isDeleted: false };
-      return record;
-    });
-    setAnimal({ ...animal, history: updatedHistory });
-    
-    if (id) {
-      try {
-        await fetch(`/api/measurements/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ isDeleted: false })
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  };
 
   const handleDeleteAnimal = async () => {
     if (window.confirm(`คุณต้องการย้ายข้อมูลของ "${animal.name}" ไปที่ถังขยะใช่หรือไม่? (สามารถกู้คืนได้ภายหลัง)`)) {
