@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Search, PawPrint, Plus, MoreVertical, Edit3, Save, X, Trash2, Star } from "lucide-react";
+import { ArrowLeft, Search, PawPrint, Plus, MoreVertical, Edit3, Save, X, Trash2, Star, Activity, Calendar } from "lucide-react";
 
 // Initial fallback data
 const initialDummyAnimals = [
