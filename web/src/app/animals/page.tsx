@@ -33,7 +33,11 @@ export default function AnimalsPage() {
             id: a.id, name: a.name, type: a.type, age: a.age, image: a.image,
             isDeleted: a.isDeleted || false,
             isFavorite: a.isFavorite || (a.history && a.history.some((h: any) => h.isFavorite)) || false,
-            latestWeight: a.history && a.history.length > 0 ? a.history[0].aiWeight : "-",
+            latestWeight: a.history && a.history.length > 0 
+              ? (a.history[0].realGirth 
+                  ? Number((Math.pow(Number(a.history[0].realGirth), 2) / 50).toFixed(1)) 
+                  : (a.history[0].realWeight || a.history[0].aiWeight)) 
+              : "-",
             lastScanned: a.history && a.history.length > 0 ? a.history[0].date : "-"
           }));
           setAnimals(arr);
@@ -58,7 +62,11 @@ export default function AnimalsPage() {
           image: a.image,
           isDeleted: a.isDeleted || false,
           isFavorite: hasFav,
-          latestWeight: activeMeasurements.length > 0 ? activeMeasurements[0].aiWeight || activeMeasurements[0].realWeight : "-",
+          latestWeight: activeMeasurements.length > 0 
+            ? (activeMeasurements[0].realGirth 
+                ? Number((Math.pow(Number(activeMeasurements[0].realGirth), 2) / 50).toFixed(1)) 
+                : (activeMeasurements[0].realWeight || activeMeasurements[0].aiWeight)) 
+            : "-",
           lastScanned: activeMeasurements.length > 0 ? activeMeasurements[0].date : "-"
         };
       });
