@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { EyeOff, Eye } from "lucide-react";
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isAppleLoading, setIsAppleLoading] = useState(false);
@@ -71,6 +72,8 @@ export default function LoginPage() {
           <div className="relative">
             <input
               type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="อีเมล / ชื่อผู้ใช้"
               className="w-full px-5 py-4 bg-white border border-gray-300 rounded-[28px] focus:outline-none focus:border-[#2B5740] focus:ring-1 focus:ring-[#2B5740] transition-all text-gray-800 font-medium placeholder-gray-400"
               required
@@ -171,18 +174,44 @@ export default function LoginPage() {
               <h3 className="text-xl font-medium text-gray-900 mb-1">Sign in with Google</h3>
               <p className="text-sm text-gray-600 mb-8">Choose an account to continue to <span className="font-semibold">BovWeight AI</span></p>
               
-              <button 
-                onClick={() => confirmSocialLogin('google')}
-                className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-200 text-left"
-              >
-                <div className="w-10 h-10 rounded-full bg-[#1A73E8] text-white flex items-center justify-center font-bold text-lg">
-                  N
-                </div>
-                <div className="flex-1 overflow-hidden">
-                  <p className="text-sm font-medium text-gray-900 truncate">Narut Pop</p>
-                  <p className="text-xs text-gray-500 truncate">narut.pop@gmail.com</p>
-                </div>
-              </button>
+              <div className="flex flex-col border border-gray-200 rounded-xl overflow-hidden">
+                <button 
+                  onClick={() => confirmSocialLogin('google')}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left"
+                >
+                  <div className="w-10 h-10 rounded-full bg-[#1A73E8] text-white flex items-center justify-center font-bold text-lg uppercase">
+                    {email ? email.charAt(0) : 'N'}
+                  </div>
+                  <div className="flex-1 overflow-hidden">
+                    <p className="text-sm font-medium text-gray-900 truncate">{email ? email.split('@')[0] : 'Narut Pop'}</p>
+                    <p className="text-xs text-gray-500 truncate">{email || 'narut.pop@gmail.com'}</p>
+                  </div>
+                </button>
+                
+                <div className="h-[1px] bg-gray-100 w-full"></div>
+                
+                <button 
+                  onClick={() => confirmSocialLogin('google')}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left"
+                >
+                  <div className="w-10 h-10 flex items-center justify-center text-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 flex-1">Use another account</span>
+                </button>
+
+                <div className="h-[1px] bg-gray-100 w-full"></div>
+
+                <button 
+                  onClick={() => confirmSocialLogin('google')}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left"
+                >
+                  <div className="w-10 h-10 flex items-center justify-center text-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 flex-1">Remove an account</span>
+                </button>
+              </div>
               
               <div className="mt-8 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500 font-medium">
                 <button className="hover:text-gray-800">English (US)</button>
