@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Edit3, Camera, Activity, Calendar, Save, X, Plus, Trash2, TrendingUp, Ruler } from "lucide-react";
+import { ArrowLeft, Edit3, Camera, Activity, Calendar, Save, X, Plus, Trash2, TrendingUp, Ruler, Syringe } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LabelList } from 'recharts';
 
 export default function AnimalHistoryPage() {
@@ -26,8 +26,16 @@ export default function AnimalHistoryPage() {
 
   const [viewImage, setViewImage] = useState<string | null>(null);
   const [showDeleted, setShowDeleted] = useState(false);
+  
+  const [vaccineHistory, setVaccineHistory] = useState<any[]>([]);
 
   const loadData = async () => {
+    // Load Vaccine/Medicine history
+    const storedVacHist = localStorage.getItem("farmVaccineHistory");
+    if (storedVacHist) {
+      const allVac = JSON.parse(storedVacHist);
+      setVaccineHistory(allVac.filter((r: any) => r.animalId === animalId));
+    }
     try {
       const res = await fetch(`/api/animals/${animalId}`, { cache: 'no-store' });
       if (!res.ok) {
@@ -535,6 +543,55 @@ export default function AnimalHistoryPage() {
               );
             })}
           </div>
+        </div>
+
+        {/* Vaccine/Medicine History */}
+        <div className="mt-8 border-t border-gray-100 pt-6">
+          <div className="flex items-center justify-between mb-5 px-1">
+            <h2 className="text-lg font-bold text-pink-600 flex items-center gap-2">
+              <Syringe size={20} /> ประวัติยาและวัคซีน
+            </h2>
+            <Link href={`/medicine?animalId=${animalId}`} className="text-sm text-pink-600 font-bold bg-pink-100 px-3 py-1.5 rounded-full hover:bg-pink-200 transition-colors flex items-center gap-1">
+              คำนวณยาและวัคซีน
+            </Link>
+          </div>
+
+          {vaccineHistory.length === 0 ? (
+            <div className="bg-gray-50 border border-gray-100 rounded-3xl p-6 text-center text-gray-500 text-sm font-medium">
+              ยังไม่มีประวัติการให้ยาหรือวัคซีน
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {vaccineHistory.map((record: any) => {
+                const dateObj = new Date(record.date);
+                const dateStr = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getFullYear() + 543}`;
+                
+                return (
+                  <div key={record.id} className="bg-white rounded-2xl p-4 border border-pink-100 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+                    <div className="w-12 h-12 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center text-2xl shrink-0 border border-pink-100">
+                      {record.medIcon || '💊'}
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <div className="flex justify-between items-start mb-1">
+                        <p className="font-bold text-gray-900 truncate pr-2">{record.medName}</p>
+                        <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md whitespace-nowrap shrink-0">
+                          {dateStr}
+                        </span>
+                      </div>
+                      <p className="text-sm text-pink-600 font-medium">
+                        ปริมาณ: {record.dose} {record.unit}
+                      </p>
+                      {record.injectionInterval && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          ความถี่: {record.injectionInterval}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Deleted Records Section */}
