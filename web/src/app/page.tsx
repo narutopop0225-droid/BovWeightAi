@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isAppleLoading, setIsAppleLoading] = useState(false);
   const [mockProvider, setMockProvider] = useState<'google' | 'apple' | null>(null);
+  const [isAccountRemoved, setIsAccountRemoved] = useState(false);
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -19,6 +20,7 @@ export default function LoginPage() {
 
   const handleSocialLogin = (provider: 'google' | 'apple') => {
     // Open the mock provider modal
+    setIsAccountRemoved(false);
     setMockProvider(provider);
   };
 
@@ -175,20 +177,24 @@ export default function LoginPage() {
               <p className="text-sm text-gray-600 mb-8">Choose an account to continue to <span className="font-semibold">BovWeight AI</span></p>
               
               <div className="flex flex-col border border-gray-200 rounded-xl overflow-hidden">
-                <button 
-                  onClick={() => confirmSocialLogin('google')}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left"
-                >
-                  <div className="w-10 h-10 rounded-full bg-[#1A73E8] text-white flex items-center justify-center font-bold text-lg uppercase">
-                    {email ? email.charAt(0) : 'N'}
+                {!isAccountRemoved && (
+                  <div className="w-full flex items-center p-3 hover:bg-gray-50 transition-colors border-b border-gray-100 cursor-pointer" onClick={() => confirmSocialLogin('google')}>
+                    <div className="w-10 h-10 rounded-full bg-[#1A73E8] text-white flex items-center justify-center font-bold text-lg uppercase flex-shrink-0">
+                      {email ? email.charAt(0) : 'N'}
+                    </div>
+                    <div className="flex-1 overflow-hidden ml-3 text-left">
+                      <p className="text-sm font-medium text-gray-900 truncate">{email ? email.split('@')[0] : 'Narut Pop'}</p>
+                      <p className="text-xs text-gray-500 truncate">{email || 'narut.pop@gmail.com'}</p>
+                    </div>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); setIsAccountRemoved(true); }}
+                      className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                      title="Remove account"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                    </button>
                   </div>
-                  <div className="flex-1 overflow-hidden">
-                    <p className="text-sm font-medium text-gray-900 truncate">{email ? email.split('@')[0] : 'Narut Pop'}</p>
-                    <p className="text-xs text-gray-500 truncate">{email || 'narut.pop@gmail.com'}</p>
-                  </div>
-                </button>
-                
-                <div className="h-[1px] bg-gray-100 w-full"></div>
+                )}
                 
                 <button 
                   onClick={() => confirmSocialLogin('google')}
@@ -198,18 +204,6 @@ export default function LoginPage() {
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
                   </div>
                   <span className="text-sm font-medium text-gray-700 flex-1">Use another account</span>
-                </button>
-
-                <div className="h-[1px] bg-gray-100 w-full"></div>
-
-                <button 
-                  onClick={() => confirmSocialLogin('google')}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left"
-                >
-                  <div className="w-10 h-10 flex items-center justify-center text-gray-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
-                  </div>
-                  <span className="text-sm font-medium text-gray-700 flex-1">Remove an account</span>
                 </button>
               </div>
               
