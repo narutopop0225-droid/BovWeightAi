@@ -10,6 +10,8 @@ export default function LoginPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isAppleLoading, setIsAppleLoading] = useState(false);
   const [mockProvider, setMockProvider] = useState<'google' | 'apple' | null>(null);
+  const [googleModalState, setGoogleModalState] = useState<'choose' | 'add'>('choose');
+  const [newGoogleEmail, setNewGoogleEmail] = useState('');
   const [isAccountRemoved, setIsAccountRemoved] = useState(false);
   const router = useRouter();
 
@@ -21,6 +23,8 @@ export default function LoginPage() {
   const handleSocialLogin = (provider: 'google' | 'apple') => {
     // Open the mock provider modal
     setIsAccountRemoved(false);
+    setGoogleModalState('choose');
+    setNewGoogleEmail('');
     setMockProvider(provider);
   };
 
@@ -173,41 +177,72 @@ export default function LoginPage() {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
-              <h3 className="text-xl font-medium text-gray-900 mb-1">Sign in with Google</h3>
-              <p className="text-sm text-gray-600 mb-8">Choose an account to continue to <span className="font-semibold">BovWeight AI</span></p>
               
-              <div className="flex flex-col border border-gray-200 rounded-xl overflow-hidden">
-                {!isAccountRemoved && (
-                  <div className="w-full flex items-center p-3 hover:bg-gray-50 transition-colors border-b border-gray-100 cursor-pointer" onClick={() => confirmSocialLogin('google')}>
-                    <div className="w-10 h-10 rounded-full bg-[#1A73E8] text-white flex items-center justify-center font-bold text-lg uppercase flex-shrink-0">
-                      {email ? email.charAt(0) : 'N'}
-                    </div>
-                    <div className="flex-1 overflow-hidden ml-3 text-left">
-                      <p className="text-sm font-medium text-gray-900 truncate">{email ? email.split('@')[0] : 'Narut Pop'}</p>
-                      <p className="text-xs text-gray-500 truncate">{email || 'narut.pop@gmail.com'}</p>
-                    </div>
+              {googleModalState === 'choose' ? (
+                <>
+                  <h3 className="text-xl font-medium text-gray-900 mb-1">Sign in with Google</h3>
+                  <p className="text-sm text-gray-600 mb-8">Choose an account to continue to <span className="font-semibold">BovWeight AI</span></p>
+                  
+                  <div className="flex flex-col border border-gray-200 rounded-xl overflow-hidden mb-8">
+                    {!isAccountRemoved && (
+                      <div className="w-full flex items-center p-3 hover:bg-gray-50 transition-colors border-b border-gray-100 cursor-pointer" onClick={() => confirmSocialLogin('google')}>
+                        <div className="w-10 h-10 rounded-full bg-[#1A73E8] text-white flex items-center justify-center font-bold text-lg uppercase flex-shrink-0">
+                          {email ? email.charAt(0) : 'N'}
+                        </div>
+                        <div className="flex-1 overflow-hidden ml-3 text-left">
+                          <p className="text-sm font-medium text-gray-900 truncate">{email ? email.split('@')[0] : 'Narut Pop'}</p>
+                          <p className="text-xs text-gray-500 truncate">{email || 'narut.pop@gmail.com'}</p>
+                        </div>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); setIsAccountRemoved(true); }}
+                          className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                          title="Remove account"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                        </button>
+                      </div>
+                    )}
+                    
                     <button 
-                      onClick={(e) => { e.stopPropagation(); setIsAccountRemoved(true); }}
-                      className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                      title="Remove account"
+                      onClick={() => setGoogleModalState('add')}
+                      className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                      <div className="w-10 h-10 flex items-center justify-center text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                      </div>
+                      <span className="text-sm font-medium text-gray-700 flex-1">Use another account</span>
                     </button>
                   </div>
-                )}
-                
-                <button 
-                  onClick={() => confirmSocialLogin('google')}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left"
-                >
-                  <div className="w-10 h-10 flex items-center justify-center text-gray-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-xl font-medium text-gray-900 mb-1">Sign in</h3>
+                  <p className="text-sm text-gray-600 mb-8">to continue to <span className="font-semibold">BovWeight AI</span></p>
+                  
+                  <div className="text-left mb-10">
+                    <input 
+                      type="email" 
+                      placeholder="Email or phone" 
+                      value={newGoogleEmail}
+                      onChange={(e) => setNewGoogleEmail(e.target.value)}
+                      className="w-full px-4 py-4 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-[#1A73E8] focus:ring-2 focus:ring-[#1A73E8]/20 transition-all text-gray-900 text-[16px]"
+                    />
+                    <button className="text-[#1A73E8] text-sm font-medium mt-2 hover:underline">Forgot email?</button>
                   </div>
-                  <span className="text-sm font-medium text-gray-700 flex-1">Use another account</span>
-                </button>
-              </div>
+                  
+                  <div className="flex items-center justify-between mb-2">
+                    <button className="text-[#1A73E8] text-sm font-medium hover:underline">Create account</button>
+                    <button 
+                      onClick={() => confirmSocialLogin('google')}
+                      className="px-6 py-2.5 bg-[#1A73E8] text-white font-medium rounded-md hover:bg-blue-700 transition-colors"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </>
+              )}
               
-              <div className="mt-8 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500 font-medium">
+              <div className="pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500 font-medium">
                 <button className="hover:text-gray-800">English (US)</button>
                 <div className="flex gap-4">
                   <button className="hover:text-gray-800">Help</button>
