@@ -33,7 +33,7 @@ export default function LoginPage() {
             src="/logo-naihoi-lineart.png" 
             alt="BovWeight AI Logo" 
             className="w-[320px] h-auto mix-blend-multiply" 
-            style={{ clipPath: 'inset(0 0 24% 0)', marginBottom: '-15%' }}
+            style={{ clipPath: 'inset(0 0 28% 0)', marginBottom: '-18%' }}
           />
           <h1 className="text-[34px] font-black tracking-tight mt-0 text-[#092b13]">
             BovWeight AI
