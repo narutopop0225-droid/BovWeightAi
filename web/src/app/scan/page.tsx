@@ -207,7 +207,7 @@ function ScanContent() {
       
       // 2. Call the Python AI Backend
       // ใช้ Localtunnel เพื่อให้เว็บ Vercel ทะลุเข้ามาหา Docker ในคอมของคุณได้
-      const apiUrl = 'https://tender-hands-hang.loca.lt/api/segment';
+      const apiUrl = 'https://bov-weight-ai.loca.lt/api/segment';
       const apiResponse = await fetch(apiUrl, {
         method: 'POST',
         headers: {
