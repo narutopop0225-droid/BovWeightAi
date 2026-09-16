@@ -193,20 +193,61 @@ function ScanContent() {
     }
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
+    if (!selectedImage) return;
     setIsProcessing(true);
-    // Simulate AI processing delay
-    setTimeout(() => {
-      setIsProcessing(false);
+    
+    try {
+      // 1. Fetch the base64 image and convert to blob for upload
+      const response = await fetch(selectedImage);
+      const blob = await response.blob();
+      
+      const formData = new FormData();
+      formData.append('file', blob, 'image.jpg');
+      
+      // 2. Call the Python AI Backend
+      const apiResponse = await fetch('http://localhost:8000/api/segment', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!apiResponse.ok) {
+        throw new Error('Failed to connect to AI Backend');
+      }
+      
+      const data = await apiResponse.json();
+      
+      if (data.success) {
+        // 3. Update the preview with the segmented mask image
+        setSelectedImage(data.image_base64);
+        
+        // 4. Set results (combining AI area with regression mock for now)
+        setResult({
+          animalType: selectedType, 
+          weight: data.pixel_area > 0 ? (data.pixel_area * 0.005).toFixed(1) : "425.1",
+          aiGirth: "150.0",
+          height: "145.5",
+          accuracy: "98.3",
+          price: "22,500",
+          pixelArea: data.pixel_area
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      alert("⚠️ ไม่สามารถเชื่อมต่อกับ AI Backend ได้ (Docker ทำงานอยู่หรือไม่?)\n\nระบบจะใช้ข้อมูลจำลอง (Mock) ชั่วคราว");
+      
+      // Fallback to mock
       setResult({
-        animalType: selectedType, // Simulated AI classification based on user choice
+        animalType: selectedType,
         weight: "425.1",
         aiGirth: "150.0",
         height: "145.5",
         accuracy: "98.3",
         price: "22,500"
       });
-    }, 2500);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   // Mock calculation: (Girth^2) / 50 
@@ -446,21 +487,26 @@ function ScanContent() {
 
              <div className="p-6 pt-10 space-y-5">
                 {/* Main Stats */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-white p-3 rounded-2xl border border-gray-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
-                    <p className="text-[10px] text-gray-500 font-bold mb-1">น้ำหนัก (AI)</p>
-                    <p className="text-xl font-bold text-[#1e3a8a]">{result.weight}</p>
-                    <p className="text-[10px] text-gray-400">KG</p>
+                <div className="grid grid-cols-4 gap-2">
+                  <div className="bg-white p-2 rounded-2xl border border-gray-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
+                    <p className="text-[9px] text-gray-500 font-bold mb-1">น้ำหนัก(AI)</p>
+                    <p className="text-lg font-bold text-[#1e3a8a]">{result.weight}</p>
+                    <p className="text-[9px] text-gray-400">KG</p>
                   </div>
-                  <div className="bg-blue-50 p-3 rounded-2xl border border-blue-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
-                    <p className="text-[10px] text-blue-700 font-bold mb-1">รอบอก (AI)</p>
-                    <p className="text-xl font-bold text-blue-700">{result.aiGirth}</p>
-                    <p className="text-[10px] text-blue-600/70">CM</p>
+                  <div className="bg-blue-50 p-2 rounded-2xl border border-blue-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
+                    <p className="text-[9px] text-blue-700 font-bold mb-1">รอบอก(AI)</p>
+                    <p className="text-lg font-bold text-blue-700">{result.aiGirth}</p>
+                    <p className="text-[9px] text-blue-600/70">CM</p>
                   </div>
-                  <div className="bg-white p-3 rounded-2xl border border-gray-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
-                    <p className="text-[10px] text-gray-500 font-bold mb-1">ส่วนสูง (AI)</p>
-                    <p className="text-xl font-bold text-[#1e3a8a]">{result.height}</p>
-                    <p className="text-[10px] text-gray-400">CM</p>
+                  <div className="bg-white p-2 rounded-2xl border border-gray-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
+                    <p className="text-[9px] text-gray-500 font-bold mb-1">ส่วนสูง(AI)</p>
+                    <p className="text-lg font-bold text-[#1e3a8a]">{result.height}</p>
+                    <p className="text-[9px] text-gray-400">CM</p>
+                  </div>
+                  <div className="bg-emerald-50 p-2 rounded-2xl border border-emerald-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
+                    <p className="text-[9px] text-emerald-700 font-bold mb-1">พื้นที่พิกเซล</p>
+                    <p className="text-lg font-bold text-emerald-700">{result.pixelArea ? result.pixelArea : "-"}</p>
+                    <p className="text-[9px] text-emerald-600/70">Px²</p>
                   </div>
                 </div>
 
