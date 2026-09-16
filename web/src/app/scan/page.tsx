@@ -206,8 +206,13 @@ function ScanContent() {
       formData.append('file', blob, 'image.jpg');
       
       // 2. Call the Python AI Backend
-      const apiResponse = await fetch('http://localhost:8000/api/segment', {
+      // ใช้ Localtunnel เพื่อให้เว็บ Vercel ทะลุเข้ามาหา Docker ในคอมของคุณได้
+      const apiUrl = 'https://tender-hands-hang.loca.lt/api/segment';
+      const apiResponse = await fetch(apiUrl, {
         method: 'POST',
+        headers: {
+          'Bypass-Tunnel-Reminder': 'true' // Bypass localtunnel warning page
+        },
         body: formData,
       });
       
