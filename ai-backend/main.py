@@ -17,8 +17,6 @@ app.add_middleware(
 
 model = YOLO('Model/best.pt')
 
-# Fallback names in case the model classes aren't named properly
-# The user wants 7 zones:
 ZONE_NAMES = {
     0: "โซนสะโพก (Hip Zone)",
     1: "ส่วนหลัง / สันนอก (Loin / Spine)",
@@ -51,11 +49,15 @@ async def segment_image(file: UploadFile = File(...)):
     
     results = model(img)
     
-    overlay_img = img.copy()
     total_pixel_area = 0
     zone_stats = {}
 
     r = results[0]
+    
+    # Prepare overlay logic
+    overlay = np.zeros_like(img, dtype=np.uint8)
+    alpha_mask = np.zeros(img.shape[:2], dtype=bool)
+
     if r.masks is not None:
         masks = r.masks.data.cpu().numpy()
         classes = r.boxes.cls.cpu().numpy() if r.boxes is not None else []
@@ -67,7 +69,8 @@ async def segment_image(file: UploadFile = File(...)):
             cls_id = int(classes[i]) if len(classes) > i else 0
             
             mask_resized = cv2.resize(mask, (img.shape[1], img.shape[0]))
-            area = int(np.sum(mask_resized > 0.5))
+            bool_mask = mask_resized > 0.5
+            area = int(np.sum(bool_mask))
             total_pixel_area += area
             
             # Determine color and name
@@ -83,10 +86,13 @@ async def segment_image(file: UploadFile = File(...)):
                 zone_stats[name] = {"area": 0, "color_hex": f"#{color[2]:02x}{color[1]:02x}{color[0]:02x}"}
             zone_stats[name]["area"] += area
             
-            # Draw overlay
-            overlay = np.zeros_like(img, dtype=np.uint8)
-            overlay[mask_resized > 0.5] = color
-            cv2.addWeighted(overlay, 0.5, overlay_img, 0.5, 0, overlay_img)
+            # Draw on mask
+            overlay[bool_mask] = color
+            alpha_mask[bool_mask] = True
+
+    # Blend outside the loop
+    blended = cv2.addWeighted(img, 0.5, overlay, 0.5, 0)
+    overlay_img = np.where(alpha_mask[..., None], blended, img)
 
     _, buffer = cv2.imencode('.jpg', overlay_img)
     img_base64 = base64.b64encode(buffer).decode('utf-8')

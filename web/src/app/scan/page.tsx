@@ -14,6 +14,8 @@ function ScanContent() {
   const [showGuidelines, setShowGuidelines] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [aiImage, setAiImage] = useState<string | null>(null);
+  const [showAiImage, setShowAiImage] = useState(true);
   const [base64Image, setBase64Image] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -72,6 +74,8 @@ function ScanContent() {
         const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
         setBase64Image(dataUrl);
         setSelectedImage(dataUrl);
+        setAiImage(null);
+        setShowAiImage(true);
         stopCamera();
         setResult(null);
         setRealGirth("");
@@ -188,6 +192,8 @@ function ScanContent() {
       reader.readAsDataURL(file);
 
       setResult(null); // Reset previous result
+      setAiImage(null);
+      setShowAiImage(true);
       setRealGirth("");
       
     }
@@ -221,7 +227,8 @@ function ScanContent() {
       
       if (data.success) {
         // 3. Update the preview with the segmented mask image
-        setSelectedImage(data.image_base64);
+        setAiImage(data.image_base64);
+        setShowAiImage(true);
         
         // 4. Set results (combining AI area with regression mock for now)
         setResult({
@@ -379,7 +386,7 @@ function ScanContent() {
               <span>ภาพสำหรับวิเคราะห์</span>
             </h2>
             {selectedImage && !isProcessing && (
-               <button onClick={() => { setSelectedImage(null); setResult(null); setRealGirth("");  }} className="text-red-500 text-sm font-semibold hover:underline">เปลี่ยนรูป</button>
+               <button onClick={() => { setSelectedImage(null); setAiImage(null); setShowAiImage(true); setResult(null); setRealGirth("");  }} className="text-red-500 text-sm font-semibold hover:underline">เปลี่ยนรูป</button>
             )}
           </div>
 
@@ -406,9 +413,19 @@ function ScanContent() {
 
           <div className="flex-1 min-h-[320px] flex flex-col items-center justify-center p-5 relative bg-gradient-to-b from-white/30 to-transparent">
             {selectedImage ? (
-              <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-inner border border-white/50">
-                <img src={selectedImage} alt="Cow" className="w-full h-full object-cover" />
+              <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-inner border border-white/50 group">
+                <img src={(aiImage && showAiImage) ? aiImage : selectedImage} alt="Cow" className="w-full h-full object-cover transition-all duration-300" />
                 
+                {/* Toggle Button */}
+                {aiImage && (
+                  <button 
+                    onClick={() => setShowAiImage(!showAiImage)}
+                    className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white font-semibold text-xs px-4 py-2 rounded-full hover:bg-black/80 transition-all shadow-lg border border-white/20 z-20"
+                  >
+                    {showAiImage ? 'ซ่อนพื้นที่วิเคราะห์' : 'แสดงพื้นที่วิเคราะห์'}
+                  </button>
+                )}
+
                 {/* Scanning Animation Overlay */}
                 {isProcessing && (
                   <div className="absolute inset-0 bg-[#1e3a8a]/80 backdrop-blur-sm flex flex-col items-center justify-center text-white transition-all duration-300">
