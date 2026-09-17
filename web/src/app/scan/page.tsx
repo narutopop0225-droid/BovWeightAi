@@ -206,13 +206,10 @@ function ScanContent() {
       formData.append('file', blob, 'image.jpg');
       
       // 2. Call the Python AI Backend
-      // ใช้ Localtunnel เพื่อให้เว็บ Vercel ทะลุเข้ามาหา Docker ในคอมของคุณได้
-      const apiUrl = 'https://bov-weight-ai.loca.lt/api/segment';
+      // เรียกไปยัง Next.js API Route ของเราเอง เพื่อแก้ปัญหา CORS
+      const apiUrl = '/api/analyze';
       const apiResponse = await fetch(apiUrl, {
         method: 'POST',
-        headers: {
-          'Bypass-Tunnel-Reminder': 'true' // Bypass localtunnel warning page
-        },
         body: formData,
       });
       
