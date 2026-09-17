@@ -231,7 +231,8 @@ function ScanContent() {
           height: "145.5",
           accuracy: "98.3",
           price: "22,500",
-          pixelArea: data.pixel_area
+          pixelArea: data.pixel_area,
+          zones: data.zones
         });
       }
     } catch (error) {
@@ -511,6 +512,22 @@ function ScanContent() {
                     <p className="text-[9px] text-emerald-600/70">Px²</p>
                   </div>
                 </div>
+                
+                {/* Zones Breakdown */}
+                {result.zones && result.zones.length > 0 && (
+                  <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                    <h3 className="text-sm font-bold text-[#1e3a8a] mb-3 border-b pb-2">สัดส่วนพื้นที่แต่ละส่วน</h3>
+                    <div className="space-y-3">
+                      {result.zones.map((zone: any, index: number) => (
+                        <div key={index} className="flex items-center gap-3 text-sm">
+                          <div className="w-4 h-4 rounded-full shadow-sm flex-shrink-0" style={{ backgroundColor: zone.color }}></div>
+                          <div className="flex-1 font-semibold text-gray-700 truncate">{zone.name}</div>
+                          <div className="font-black text-[#1e3a8a]">{zone.percentage}%</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Compare Real Girth Input */}
                 <div className="bg-blue-50 p-5 rounded-2xl border border-blue-100 space-y-4">
