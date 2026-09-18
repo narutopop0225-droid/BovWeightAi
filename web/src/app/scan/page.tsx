@@ -507,26 +507,34 @@ function ScanContent() {
 
              <div className="p-6 pt-10 space-y-5">
                 {/* Main Stats */}
-                <div className="grid grid-cols-4 gap-2">
-                  <div className="bg-white p-2 rounded-2xl border border-gray-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
-                    <p className="text-[9px] text-gray-500 font-bold mb-1">น้ำหนัก(AI)</p>
-                    <p className="text-lg font-bold text-[#1e3a8a]">{result.weight}</p>
-                    <p className="text-[9px] text-gray-400">KG</p>
+                <div className="space-y-3">
+                  {/* Highlighted Weight Block */}
+                  <div className="bg-gradient-to-br from-blue-600 to-[#1e3a8a] p-4 rounded-3xl text-center shadow-lg relative overflow-hidden flex flex-col justify-center items-center">
+                    <div className="absolute top-0 right-0 w-32 h-full bg-white opacity-10 skew-x-12 translate-x-16"></div>
+                    <p className="text-sm text-blue-200 font-bold mb-1">น้ำหนักประเมิน (AI)</p>
+                    <div className="flex items-baseline gap-2 z-10">
+                      <p className="text-5xl font-black text-white">{result.weight}</p>
+                      <p className="text-sm text-blue-200 font-bold">กก.</p>
+                    </div>
                   </div>
-                  <div className="bg-blue-50 p-2 rounded-2xl border border-blue-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
-                    <p className="text-[9px] text-blue-700 font-bold mb-1">รอบอก(AI)</p>
-                    <p className="text-lg font-bold text-blue-700">{result.aiGirth}</p>
-                    <p className="text-[9px] text-blue-600/70">CM</p>
-                  </div>
-                  <div className="bg-white p-2 rounded-2xl border border-gray-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
-                    <p className="text-[9px] text-gray-500 font-bold mb-1">ส่วนสูง(AI)</p>
-                    <p className="text-lg font-bold text-[#1e3a8a]">{result.height}</p>
-                    <p className="text-[9px] text-gray-400">CM</p>
-                  </div>
-                  <div className="bg-emerald-50 p-2 rounded-2xl border border-emerald-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
-                    <p className="text-[9px] text-emerald-700 font-bold mb-1">พื้นที่พิกเซล</p>
-                    <p className="text-lg font-bold text-emerald-700">{result.pixelArea ? result.pixelArea : "-"}</p>
-                    <p className="text-[9px] text-emerald-600/70">Px²</p>
+
+                  {/* Secondary Stats */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="bg-blue-50 p-2 rounded-2xl border border-blue-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
+                      <p className="text-[10px] text-blue-700 font-bold mb-1">รอบอก(AI)</p>
+                      <p className="text-lg font-bold text-blue-700">{result.aiGirth}</p>
+                      <p className="text-[10px] text-blue-600/70">CM</p>
+                    </div>
+                    <div className="bg-white p-2 rounded-2xl border border-gray-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
+                      <p className="text-[10px] text-gray-500 font-bold mb-1">ส่วนสูง(AI)</p>
+                      <p className="text-lg font-bold text-[#1e3a8a]">{result.height}</p>
+                      <p className="text-[10px] text-gray-400">CM</p>
+                    </div>
+                    <div className="bg-emerald-50 p-2 rounded-2xl border border-emerald-100 text-center shadow-sm relative overflow-hidden flex flex-col justify-center">
+                      <p className="text-[10px] text-emerald-700 font-bold mb-1">พื้นที่พิกเซล</p>
+                      <p className="text-lg font-bold text-emerald-700">{result.pixelArea ? result.pixelArea : "-"}</p>
+                      <p className="text-[10px] text-emerald-600/70">Px²</p>
+                    </div>
                   </div>
                 </div>
                 
