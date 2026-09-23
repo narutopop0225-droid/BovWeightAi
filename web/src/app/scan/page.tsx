@@ -204,8 +204,8 @@ function ScanContent() {
     setIsProcessing(true);
     
     try {
-      // 1. Fetch the base64 image and convert to blob for upload
-      const response = await fetch(selectedImage);
+      // 1. Fetch the compressed base64 image and convert to blob for upload
+      const response = await fetch(base64Image || selectedImage);
       const blob = await response.blob();
       
       const formData = new FormData();
