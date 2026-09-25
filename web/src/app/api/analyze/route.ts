@@ -4,10 +4,18 @@ export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     
-    const apiUrl = process.env.NODE_ENV === 'development' 
-      ? 'http://localhost:8000/api/segment' 
-      : 'https://bov-weight-ai.loca.lt/api/segment';
-
+    let apiUrl = 'http://localhost:8000/api/segment';
+    
+    if (process.env.NODE_ENV !== 'development') {
+      try {
+        const urlRes = await fetch('https://raw.githubusercontent.com/narutopop0225-droid/BovWeightAi/main/tunnel_url.txt', { cache: 'no-store' });
+        const tunnelBaseUrl = (await urlRes.text()).trim();
+        apiUrl = `${tunnelBaseUrl}/api/segment`;
+      } catch (e) {
+        console.error('Failed to fetch tunnel url', e);
+        apiUrl = 'https://bov-weight-ai.loca.lt/api/segment'; // fallback
+      }
+    }
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
