@@ -431,7 +431,7 @@ export default function PricingCalculatorPage() {
                  {/* Price Edit & Total */}
                  <div className="mt-auto flex flex-col gap-2">
                     <div className="flex justify-between items-center bg-white/70 backdrop-blur-sm px-3 py-2 rounded-[14px] border border-white/50">
-                       <span className="text-[11px] text-gray-500 font-bold flex items-center gap-1 cursor-pointer" onClick={() => !isEditing && startEditCustomPrice(uniqueId, animal.customPrice)}>
+                       <span className="text-[11px] text-gray-500 font-bold flex items-center gap-1 cursor-pointer" onClick={() => !isEditing && startEditCustomPrice(uniqueId, animal.customPrice, animal.type)}>
                           ราคา/กก. {isEditing ? '' : <Edit3 size={12} className="hover:text-amber-500 transition-colors"/>}
                        </span>
                        
@@ -442,7 +442,7 @@ export default function PricingCalculatorPage() {
                            <button onClick={() => setEditingId(null)} className="bg-white text-gray-500 p-1.5 rounded-md border border-gray-200 hover:bg-gray-50"><X size={12} /></button>
                          </div>
                        ) : (
-                         <span className="font-mono text-[14px] font-bold text-amber-900 leading-none cursor-pointer hover:text-amber-600" onClick={() => startEditCustomPrice(uniqueId, animal.customPrice)}>{activePrice} ฿</span>
+                         <span className="font-mono text-[14px] font-bold text-amber-900 leading-none cursor-pointer hover:text-amber-600" onClick={() => startEditCustomPrice(uniqueId, animal.customPrice, animal.type)}>{activePrice} ฿</span>
                        )}
                     </div>
 
@@ -521,7 +521,7 @@ export default function PricingCalculatorPage() {
                  {/* Price Edit & Total */}
                  <div className="mt-auto flex flex-col gap-2">
                     <div className="flex justify-between items-center bg-white/70 backdrop-blur-sm px-3 py-2 rounded-[14px] border border-white/50">
-                       <span className="text-[11px] text-gray-500 font-bold flex items-center gap-1 cursor-pointer" onClick={() => !isEditing && startEditCustomPrice(uniqueId, record.customPrice)}>
+                       <span className="text-[11px] text-gray-500 font-bold flex items-center gap-1 cursor-pointer" onClick={() => !isEditing && startEditCustomPrice(uniqueId, record.customPrice, record.animalType)}>
                           ราคา/กก. {isEditing ? '' : <Edit3 size={12} className="hover:text-amber-500 transition-colors"/>}
                        </span>
                        
@@ -532,7 +532,7 @@ export default function PricingCalculatorPage() {
                            <button onClick={() => setEditingId(null)} className="bg-white text-gray-500 p-1.5 rounded-md border border-gray-200 hover:bg-gray-50"><X size={12} /></button>
                          </div>
                        ) : (
-                         <span className="font-mono text-[14px] font-bold text-amber-900 leading-none cursor-pointer hover:text-amber-600" onClick={() => startEditCustomPrice(uniqueId, record.customPrice)}>{activePrice} ฿</span>
+                         <span className="font-mono text-[14px] font-bold text-amber-900 leading-none cursor-pointer hover:text-amber-600" onClick={() => startEditCustomPrice(uniqueId, record.customPrice, record.animalType)}>{activePrice} ฿</span>
                        )}
                     </div>
 
