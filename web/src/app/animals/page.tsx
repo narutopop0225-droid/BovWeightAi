@@ -18,6 +18,7 @@ export default function AnimalsPage() {
   const [showDeleted, setShowDeleted] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
+  const [editType, setEditType] = useState("");
 
   const [animals, setAnimals] = useState<any[]>([]);
 
@@ -113,7 +114,7 @@ export default function AnimalsPage() {
     const animal = animals.find(a => a.id === editingId);
     if (!animal) return;
     
-    setAnimals(prev => prev.map(a => a.id === editingId ? { ...a, name: editName } : a));
+    setAnimals(prev => prev.map(a => a.id === editingId ? { ...a, name: editName, type: editType } : a));
     setEditingId(null);
 
     try {
@@ -123,7 +124,7 @@ export default function AnimalsPage() {
         body: JSON.stringify({
           id: animal.id,
           name: editName,
-          type: animal.type,
+          type: editType,
           age: animal.age,
           image: animal.image
         })
@@ -288,6 +289,14 @@ export default function AnimalsPage() {
                         autoFocus
                         placeholder="ชื่อสัตว์..."
                       />
+                      <select 
+                        value={editType} 
+                        onChange={(e) => setEditType(e.target.value)}
+                        className="w-full px-3 py-2 text-sm border border-emerald-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white text-[#064e3b] font-bold rounded-lg shadow-sm"
+                      >
+                        <option value="โคเนื้อ">โคเนื้อ</option>
+                        <option value="กระบือ">กระบือ</option>
+                      </select>
                       <div className="flex space-x-2">
                         <button onClick={(e) => handleSaveEdit(e)} className="flex-1 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-md hover:bg-emerald-700 transition-colors shadow-sm">
                           เสร็จสิ้น
@@ -317,6 +326,7 @@ export default function AnimalsPage() {
                       e.stopPropagation();
                       setEditingId(animal.id);
                       setEditName(animal.name);
+                      setEditType(animal.type);
                     }}>
                       <Edit3 size={14} />
                     </button>
