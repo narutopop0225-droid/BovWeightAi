@@ -180,7 +180,7 @@ export default function AnimalsPage() {
 
   const filteredAnimals = animals.filter(a => {
     const matchesSearch = a.name.includes(search) || a.id.includes(search);
-    const matchesFilter = filter === "ทั้งหมด" ? true : (filter === "รายการโปรด" ? a.isFavorite : a.type === filter);
+    const matchesFilter = filter === "ทั้งหมด" ? true : (filter === "รายการโปรด" ? a.isFavorite : a.type?.includes(filter));
     return matchesSearch && matchesFilter;
   });
 

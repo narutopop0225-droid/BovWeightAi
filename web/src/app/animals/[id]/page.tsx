@@ -19,6 +19,7 @@ export default function AnimalHistoryPage() {
   const [isEditingAnimal, setIsEditingAnimal] = useState(false);
   const [animalName, setAnimalName] = useState("");
   const [animalAge, setAnimalAge] = useState("");
+  const [animalBreed, setAnimalBreed] = useState("");
   
   const [editingHistory, setEditingHistory] = useState<number | null>(null);
   const [editGirth, setEditGirth] = useState("");
@@ -48,6 +49,7 @@ export default function AnimalHistoryPage() {
             setAnimal(currentAnimal);
             setAnimalName(currentAnimal.name);
             setAnimalAge(currentAnimal.age || "N/A");
+            setAnimalBreed(currentAnimal.type || "โคเนื้อ");
           }
         }
         return;
@@ -60,6 +62,7 @@ export default function AnimalHistoryPage() {
       });
       setAnimalName(data.name);
       setAnimalAge(data.age || "N/A");
+      setAnimalBreed(data.type || "โคเนื้อ");
     } catch (err) {
       console.error(err);
     }
@@ -70,7 +73,7 @@ export default function AnimalHistoryPage() {
   }, [animalId]);
 
   const handleSaveAnimalInfo = async () => {
-    const updatedAnimal = { ...animal, name: animalName, age: animalAge };
+    const updatedAnimal = { ...animal, name: animalName, age: animalAge, type: animalBreed };
     setAnimal(updatedAnimal);
     setIsEditingAnimal(false);
     
@@ -81,7 +84,7 @@ export default function AnimalHistoryPage() {
         body: JSON.stringify({
           id: animal.id,
           name: animalName,
-          type: animal.type,
+          type: animalBreed,
           age: animalAge,
           image: animal.image
         })
@@ -263,7 +266,7 @@ export default function AnimalHistoryPage() {
                     placeholder="ชื่อสัตว์"
                     className="block bg-white/20 border border-white/50 rounded-lg px-3 py-1 text-white font-bold text-2xl w-56 focus:outline-none focus:bg-white/30"
                   />
-                  <div className="flex flex-col space-y-2">
+                  <div className="flex flex-col space-y-2 mt-2">
                     <input 
                       type="text" 
                       value={animalAge}
@@ -271,6 +274,28 @@ export default function AnimalHistoryPage() {
                       placeholder="อายุ (เช่น 2 ปี)"
                       className="bg-white/20 border border-white/50 rounded-lg px-3 py-1.5 text-white text-sm w-56 focus:outline-none focus:bg-white/30"
                     />
+                    <select 
+                      value={animalBreed}
+                      onChange={(e) => setAnimalBreed(e.target.value)}
+                      className="bg-white/20 border border-white/50 rounded-lg px-3 py-1.5 text-white text-sm w-56 focus:outline-none focus:bg-white/30 [&>option]:text-black"
+                    >
+                      {animalBreed.includes('โคเนื้อ') ? (
+                        <>
+                          <option value="โคเนื้อ">โคเนื้อ (ไม่ระบุสายพันธุ์)</option>
+                          <option value="โคเนื้อ (พันธุ์บราห์มัน/ลูกผสม)">พันธุ์บราห์มัน/ลูกผสมพันธุ์บราห์มัน</option>
+                          <option value="โคเนื้อ (พันธุ์ชาร์โรเล่ส์/ลูกผสม)">พันธุ์ชาร์โรเล่ส์/ลูกผสมพันธุ์ชาร์โรเล่ส์</option>
+                          <option value="โคเนื้อ (พันธุ์แบรงกัส/ลูกผสม)">พันธุ์แบรงกัส/ลูกผสมพันธุ์แบรงกัส</option>
+                          <option value="โคเนื้อ (พันธุ์วากิว/ลูกผสม)">พันธุ์วากิว/ลูกผสมพันธุ์วากิว</option>
+                          <option value="โคเนื้อ (พันธุ์ไทยเมืองพื้น)">พันธุ์ไทยเมืองพื้น</option>
+                        </>
+                      ) : (
+                        <>
+                          <option value="กระบือ">กระบือ (ไม่ระบุสายพันธุ์)</option>
+                          <option value="กระบือ (กระบือปลัก)">กระบือปลัก</option>
+                          <option value="กระบือ (กระบือแม่น้ำ)">กระบือแม่น้ำ</option>
+                        </>
+                      )}
+                    </select>
                     <div className="flex space-x-2">
                       <button onClick={handleSaveAnimalInfo} className="flex-1 py-2 bg-emerald-500 rounded-lg text-white font-bold text-sm hover:bg-emerald-600 transition-colors">
                         เสร็จสิ้น

@@ -4,7 +4,7 @@ const { execSync } = require('child_process');
 
 function startTunnel() {
     console.log('Starting localtunnel...');
-    const lt = spawn('npx.cmd', ['localtunnel', '--port', '8000']);
+    const lt = spawn('npx.cmd', ['localtunnel', '--port', '8000'], { shell: true });
     
     let urlFound = false;
 
