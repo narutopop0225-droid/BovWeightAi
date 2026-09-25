@@ -208,6 +208,13 @@ export default function PricingCalculatorPage() {
     const matchesSearch = a.name.includes(search) || a.id.includes(search);
     const matchesFilter = filter === "ทั้งหมด" ? true : a.type === filter;
     return matchesSearch && matchesFilter;
+  }).sort((a, b) => {
+    // Sort selected breed to the top
+    const aMatch = a.type === selectedBreedForPrice;
+    const bMatch = b.type === selectedBreedForPrice;
+    if (aMatch && !bMatch) return -1;
+    if (!aMatch && bMatch) return 1;
+    return 0;
   });
 
   const activeHistoryRecords = historyRecords.filter(a => !a.isDeleted);
@@ -262,6 +269,12 @@ export default function PricingCalculatorPage() {
     const matchesSearch = (a.animalName || '').includes(search) || (a.animalId || '').includes(search);
     const matchesFilter = filter === "ทั้งหมด" ? true : a.animalType === filter;
     return matchesSearch && matchesFilter;
+  }).sort((a, b) => {
+    const aMatch = a.animalType === selectedBreedForPrice;
+    const bMatch = b.animalType === selectedBreedForPrice;
+    if (aMatch && !bMatch) return -1;
+    if (!aMatch && bMatch) return 1;
+    return 0;
   });
 
   return (
@@ -415,11 +428,18 @@ export default function PricingCalculatorPage() {
 
               {/* Bottom: Info & Pricing */}
               <div className="flex-1 flex flex-col justify-between px-1.5 pb-1">
-                 {/* Header: Name and Toggle */}
+                  {/* Header: Name and Toggle */}
                  <div className="flex justify-between items-start mb-3">
                     <div className="min-w-0 pr-2">
                        <h3 className="font-bold text-[16px] leading-tight text-amber-950 truncate">{animal.name}</h3>
-                       <p className="text-[12px] text-amber-700 font-bold font-mono mt-1 bg-amber-200/40 inline-block px-2.5 py-0.5 rounded-full">{weight > 0 ? weight.toFixed(1) : "0"} kg</p>
+                       <div className="flex flex-wrap items-center gap-1 mt-1">
+                         <p className="text-[12px] text-amber-700 font-bold font-mono bg-amber-200/40 px-2.5 py-0.5 rounded-full">{weight > 0 ? weight.toFixed(1) : "0"} kg</p>
+                         {animal.type !== selectedBreedForPrice && (
+                           <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-md border border-red-200 truncate">
+                             ไม่ใช่สายพันธุ์ที่เลือก
+                           </span>
+                         )}
+                       </div>
                     </div>
                     
                     {/* Toggle Switch */}
@@ -496,15 +516,22 @@ export default function PricingCalculatorPage() {
 
               {/* Bottom: Info & Pricing */}
               <div className="flex-1 flex flex-col justify-between px-1.5 pb-1">
-                 {/* Header: Name and Toggle */}
+                  {/* Header: Name and Toggle */}
                  <div className="flex justify-between items-start mb-3">
                     <div className="min-w-0 pr-2">
                        <h3 className="font-bold text-[16px] leading-tight text-amber-950 truncate">{record.animalName || 'ไม่ระบุชื่อ'}</h3>
-                       <div className="flex items-center gap-1.5 mt-1">
+                       <div className="flex flex-wrap items-center gap-1.5 mt-1">
                           <p className="text-[12px] text-amber-700 font-bold font-mono bg-amber-200/40 px-2.5 py-0.5 rounded-full">{weight > 0 ? weight.toFixed(1) : "0"} kg</p>
-                          <span className="w-1 h-1 bg-amber-300 rounded-full"></span>
-                          <span className="text-[10px] text-amber-600/70 font-medium">{dateString}</span>
+                          <span className="w-1 h-1 bg-amber-300 rounded-full shrink-0"></span>
+                          <span className="text-[10px] text-amber-600/70 font-medium shrink-0">{dateString}</span>
                        </div>
+                       {record.animalType !== selectedBreedForPrice && (
+                         <div className="mt-1.5">
+                           <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-md border border-red-200 truncate">
+                             ไม่ใช่สายพันธุ์ที่เลือก
+                           </span>
+                         </div>
+                       )}
                     </div>
                     
                     {/* Actions: Delete & Toggle Switch */}
