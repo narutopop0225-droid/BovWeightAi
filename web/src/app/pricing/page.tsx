@@ -4,8 +4,22 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Calculator, TrendingUp, Edit3, Check, Save, Coins, X, Plus, Minus, Search, Home, History, CircleUser, Camera, Star, Trash2 } from "lucide-react";
 
+const DEFAULT_BREED_PRICES: Record<string, number> = {
+  "โคเนื้อ": 80,
+  "โคเนื้อ (พันธุ์บราห์มัน/ลูกผสม)": 100,
+  "โคเนื้อ (พันธุ์ชาร์โรเล่ส์/ลูกผสม)": 120,
+  "โคเนื้อ (พันธุ์แบรงกัส/ลูกผสม)": 110,
+  "โคเนื้อ (พันธุ์วากิว/ลูกผสม)": 150,
+  "โคเนื้อ (พันธุ์ไทยเมืองพื้น)": 80,
+  "กระบือ": 80,
+  "กระบือ (กระบือปลัก)": 80,
+  "กระบือ (กระบือแม่น้ำ)": 90
+};
+
 export default function PricingCalculatorPage() {
-  const [globalPrice, setGlobalPrice] = useState<number>(80);
+  const [breedBasePrices, setBreedBasePrices] = useState<Record<string, number>>(DEFAULT_BREED_PRICES);
+  const [selectedBreedForPrice, setSelectedBreedForPrice] = useState("โคเนื้อ");
+  
   const [farmAnimals, setFarmAnimals] = useState<any[]>([]);
   const [historyRecords, setHistoryRecords] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<'farm' | 'history' | 'favorites'>('farm');
@@ -61,8 +75,16 @@ export default function PricingCalculatorPage() {
   };
 
   useEffect(() => {
-    const savedGlobal = localStorage.getItem('globalPricePerKg');
-    if (savedGlobal) setGlobalPrice(Number(savedGlobal));
+    const savedBreedPrices = localStorage.getItem('breedBasePrices');
+    if (savedBreedPrices) {
+      setBreedBasePrices(prev => ({ ...prev, ...JSON.parse(savedBreedPrices) }));
+    } else {
+      // Legacy fallback
+      const savedGlobal = localStorage.getItem('globalPricePerKg');
+      if (savedGlobal) {
+        setBreedBasePrices(prev => ({ ...prev, "โคเนื้อ": Number(savedGlobal), "กระบือ": Number(savedGlobal) }));
+      }
+    }
 
     loadData();
   }, []);
@@ -116,15 +138,16 @@ export default function PricingCalculatorPage() {
     return animal.history[0].aiWeight || animal.history[0].realWeight || 0;
   };
 
-  const updateGlobalPrice = (newPrice: number) => {
+  const updateBreedPrice = (newPrice: number) => {
     if (newPrice < 0) return;
-    setGlobalPrice(newPrice);
-    localStorage.setItem('globalPricePerKg', newPrice.toString());
+    const newPrices = { ...breedBasePrices, [selectedBreedForPrice]: newPrice };
+    setBreedBasePrices(newPrices);
+    localStorage.setItem('breedBasePrices', JSON.stringify(newPrices));
   };
 
-  const startEditCustomPrice = (uniqueId: string, currentCustom: number | undefined) => {
+  const startEditCustomPrice = (uniqueId: string, currentCustom: number | undefined, animalType: string) => {
     setEditingId(uniqueId);
-    setTempCustomPrice(currentCustom !== undefined ? currentCustom.toString() : globalPrice.toString());
+    setTempCustomPrice(currentCustom !== undefined ? currentCustom.toString() : (breedBasePrices[animalType] || 80).toString());
   };
 
   const saveFarmCustomPrice = (animalId: string) => {
@@ -161,7 +184,7 @@ export default function PricingCalculatorPage() {
       localStorage.setItem('animalCustomPrices', JSON.stringify(animalPrices));
       loadData();
     } else {
-      startEditCustomPrice(`farm-${animal.id}`, undefined);
+      startEditCustomPrice(`farm-${animal.id}`, undefined, animal.type);
     }
   };
 
@@ -173,7 +196,7 @@ export default function PricingCalculatorPage() {
       localStorage.setItem('measurementCustomPrices', JSON.stringify(measurePrices));
       loadData();
     } else {
-      startEditCustomPrice(`history-${record.id}`, undefined);
+      startEditCustomPrice(`history-${record.id}`, undefined, record.animalType);
     }
   };
 
@@ -314,15 +337,24 @@ export default function PricingCalculatorPage() {
       {/* GLOBAL PRICE CARD */}
       <div className="bg-white rounded-[24px] p-5 mb-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border-l-4 border-l-amber-400">
         <div className="flex justify-between items-center mb-4">
-          <div>
-            <h2 className="text-[14px] font-bold leading-tight">ราคามาตรฐาน (Global Price)</h2>
-            <p className="text-[10px] text-gray-400 mt-1">ใช้คำนวณราคาสัตว์พื้นฐาน</p>
+          <div className="w-full">
+            <h2 className="text-[14px] font-bold leading-tight">ราคาประเมินมาตรฐาน</h2>
+            <p className="text-[10px] text-gray-400 mt-1 mb-3">เลือกสายพันธุ์และตั้งราคาประเมิน/กก. ของฟาร์ม</p>
+            <select 
+              value={selectedBreedForPrice}
+              onChange={(e) => setSelectedBreedForPrice(e.target.value)}
+              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-[14px] text-[13px] font-bold text-[#1c1c1c] focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400"
+            >
+              {Object.keys(DEFAULT_BREED_PRICES).map(breed => (
+                <option key={breed} value={breed}>{breed}</option>
+              ))}
+            </select>
           </div>
         </div>
         
         <div className="flex items-center justify-between bg-[#f8f8f8] rounded-[18px] p-1.5">
           <button 
-            onClick={() => updateGlobalPrice(globalPrice - 1)}
+            onClick={() => updateBreedPrice((breedBasePrices[selectedBreedForPrice] || 80) - 1)}
             className="w-12 h-12 bg-white rounded-[14px] flex items-center justify-center shadow-sm text-[#1c1c1c] active:scale-95 transition-transform"
           >
             <Minus size={20} strokeWidth={2.5} />
@@ -331,8 +363,8 @@ export default function PricingCalculatorPage() {
           <div className="flex-1 flex flex-col items-center justify-center">
             <input 
               type="number"
-              value={globalPrice || ""}
-              onChange={(e) => updateGlobalPrice(Number(e.target.value))}
+              value={breedBasePrices[selectedBreedForPrice] || ""}
+              onChange={(e) => updateBreedPrice(Number(e.target.value))}
               onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
               className="w-full text-center text-3xl font-mono font-bold text-[#1c1c1c] bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
@@ -340,7 +372,7 @@ export default function PricingCalculatorPage() {
           </div>
           
           <button 
-            onClick={() => updateGlobalPrice(globalPrice + 1)}
+            onClick={() => updateBreedPrice((breedBasePrices[selectedBreedForPrice] || 80) + 1)}
             className="w-12 h-12 bg-[#1c1c1c] rounded-[14px] flex items-center justify-center text-white shadow-sm active:scale-95 transition-transform"
           >
             <Plus size={20} strokeWidth={2.5} />
@@ -358,7 +390,7 @@ export default function PricingCalculatorPage() {
         {activeTab === 'farm' && filteredFarmAnimals.map((animal, i) => {
           const weight = getLatestWeight(animal);
           const isCustom = animal.customPrice !== undefined && animal.customPrice !== null;
-          const activePrice = isCustom ? animal.customPrice : globalPrice;
+          const activePrice = isCustom ? animal.customPrice : (breedBasePrices[animal.type] || 80);
           const totalPrice = weight * activePrice;
           const uniqueId = `farm-${animal.id}`;
           const isEditing = editingId === uniqueId;
@@ -435,7 +467,7 @@ export default function PricingCalculatorPage() {
           return displayedHistory.map((record, i) => {
             const weight = record.aiWeight || 0;
             const isCustom = record.customPrice !== undefined && record.customPrice !== null;
-            const activePrice = isCustom ? record.customPrice : globalPrice;
+            const activePrice = isCustom ? record.customPrice : (breedBasePrices[record.animalType] || 80);
             const totalPrice = weight * activePrice;
             const uniqueId = `hist-${record.animalId}-${record.attempt}`;
             const isEditing = editingId === uniqueId;
