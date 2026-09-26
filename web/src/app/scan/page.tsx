@@ -24,6 +24,8 @@ function ScanContent() {
   const [isSavingToFarm, setIsSavingToFarm] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [selectedType, setSelectedType] = useState("โคเนื้อ");
+  const [animalAge, setAnimalAge] = useState("");
+  const [isCustomAge, setIsCustomAge] = useState(false);
 
   const [showCamera, setShowCamera] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -135,6 +137,7 @@ function ScanContent() {
             id: animalIdToSave,
             name: finalName,
             type: selectedType,
+            age: animalAge,
             measurements: [newMeasurement]
           })
         });
@@ -605,20 +608,58 @@ function ScanContent() {
                       </button>
                     </div>
 
-                    <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-3">
                       {targetAnimalId ? (
                         <div className="w-full px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between text-sm">
                           <span className="font-bold text-[#1e3a8a]">อัปเดตข้อมูลสัตว์: #{targetAnimalId}</span>
                           <CheckCircle2 size={18} className="text-blue-500" />
                         </div>
                       ) : (
-                        <input 
-                          type="text"
-                          value={animalName}
-                          onChange={(e) => setAnimalName(e.target.value)}
-                          placeholder="ชื่อ/รหัสสัตว์ (ไม่บังคับ) เช่น เจ้าบุญรอด"
-                          className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1d4ed8] focus:border-transparent outline-none transition-all text-sm"
-                        />
+                        <>
+                          <input 
+                            type="text"
+                            value={animalName}
+                            onChange={(e) => setAnimalName(e.target.value)}
+                            placeholder="ชื่อ/รหัสสัตว์ (ไม่บังคับ) เช่น เจ้าบุญรอด"
+                            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1d4ed8] focus:border-transparent outline-none transition-all text-sm"
+                          />
+                          
+                          {/* Age Input / Select */}
+                          <div className="flex gap-2">
+                            <select
+                              value={isCustomAge ? 'custom' : animalAge}
+                              onChange={(e) => {
+                                if (e.target.value === 'custom') {
+                                  setIsCustomAge(true);
+                                  setAnimalAge("");
+                                } else {
+                                  setIsCustomAge(false);
+                                  setAnimalAge(e.target.value);
+                                }
+                              }}
+                              className={`px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1d4ed8] focus:border-transparent outline-none transition-all text-sm text-[#1e3a8a] ${isCustomAge ? 'w-[40%]' : 'w-full'}`}
+                            >
+                              <option value="">ระบุอายุ (ไม่บังคับ)</option>
+                              <option value="แรกเกิด - 6 เดือน">แรกเกิด - 6 เดือน</option>
+                              <option value="6 เดือน - 1 ปี">6 เดือน - 1 ปี</option>
+                              <option value="1 ปี - 2 ปี">1 ปี - 2 ปี</option>
+                              <option value="2 ปี - 3 ปี">2 ปี - 3 ปี</option>
+                              <option value="3 ปีขึ้นไป">3 ปีขึ้นไป</option>
+                              <option value="custom">พิมพ์อายุเอง...</option>
+                            </select>
+                            
+                            {isCustomAge && (
+                               <input 
+                                 type="text"
+                                 value={animalAge}
+                                 onChange={(e) => setAnimalAge(e.target.value)}
+                                 placeholder="เช่น 1 ปี 5 เดือน"
+                                 className="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1d4ed8] focus:border-transparent outline-none transition-all text-sm"
+                                 autoFocus
+                               />
+                            )}
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
