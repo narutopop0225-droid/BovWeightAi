@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 .pnp
 .pnp.js
@@ -31,6 +31,8 @@ env/
 *.pt
 *.pth
 *.onnx
+models-*.zip
+ai-backend/models/
 
 # Uploads (large binary files)
 web/public/uploads/

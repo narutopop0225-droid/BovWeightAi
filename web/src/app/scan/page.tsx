@@ -236,10 +236,10 @@ function ScanContent() {
         // 4. Set results (combining AI area with regression mock for now)
         setResult({
           animalType: selectedType, 
-          weight: data.prediction ? data.prediction.kg : (data.pixel_area > 0 ? (data.pixel_area * 0.005).toFixed(1) : "425.1"),
-          aiGirth: data.prediction && data.prediction.measurements && data.prediction.measurements.length_cm ? data.prediction.measurements.length_cm.value : "150.0",
-          height: data.prediction && data.prediction.measurements && data.prediction.measurements.height_cm ? data.prediction.measurements.height_cm.value : "145.5",
-          accuracy: data.prediction && data.prediction.typical_error_kg ? ((1 - (data.prediction.typical_error_kg / data.prediction.kg)) * 100).toFixed(1) : "98.3",
+          weight: data.prediction ? Number(data.prediction.kg).toFixed(2) : (data.pixel_area > 0 ? (data.pixel_area * 0.005).toFixed(2) : "425.10"),
+          aiGirth: data.prediction && data.prediction.measurements && data.prediction.measurements.length_cm ? Number(data.prediction.measurements.length_cm.value).toFixed(2) : "150.00",
+          height: data.prediction && data.prediction.measurements && data.prediction.measurements.height_cm ? Number(data.prediction.measurements.height_cm.value).toFixed(2) : "145.50",
+          accuracy: data.prediction && data.prediction.typical_error_kg ? ((1 - (data.prediction.typical_error_kg / data.prediction.kg)) * 100).toFixed(2) : "98.30",
           price: "22,500", // Will still be mocked or calculated later
           pixelArea: data.pixel_area,
           zones: data.zones,
@@ -253,10 +253,10 @@ function ScanContent() {
       // Fallback to mock
       setResult({
         animalType: selectedType,
-        weight: "425.1",
-        aiGirth: "150.0",
-        height: "145.5",
-        accuracy: "98.3",
+        weight: "425.10",
+        aiGirth: "150.00",
+        height: "145.50",
+        accuracy: "98.30",
         price: "22,500"
       });
     } finally {
@@ -264,9 +264,9 @@ function ScanContent() {
     }
   };
 
-  // Mock calculation: (Girth^2) / 50 
-  const calculatedWeight = realGirth ? (Math.pow(Number(realGirth), 2) / 50).toFixed(1) : "-";
-  const weightDiff = realGirth && result ? (Number(calculatedWeight) - Number(result.weight)).toFixed(1) : "-";
+  // User's formula: Y = 4.447 x HG - 390.2
+  const calculatedWeight = realGirth ? ((4.447 * Number(realGirth)) - 390.2).toFixed(2) : "-";
+  const weightDiff = realGirth && result ? (Number(calculatedWeight) - Number(result.weight)).toFixed(2) : "-";
   const diffNumber = Number(weightDiff);
 
   return (

@@ -4,6 +4,18 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 import base64
+import io
+from PIL import Image
+from weight import WeightPredictor
+
+predictor = None
+try:
+    if WeightPredictor.available():
+        print("Loading weight ensemble...")
+        predictor = WeightPredictor(device="cpu")
+        predictor.warmup()
+except Exception as e:
+    print(f"Failed to load predictor: {e}")
 
 app = FastAPI()
 
@@ -111,10 +123,20 @@ async def segment_image(file: UploadFile = File(...)):
     # Sort zones by area descending
     zones_list = sorted(zones_list, key=lambda x: x["area"], reverse=True)
     
+    # Run prediction
+    pred_data = None
+    if predictor:
+        try:
+            pil_img = Image.open(io.BytesIO(contents))
+            pred_data = predictor.predict(pil_img)
+        except Exception as e:
+            print(f"Prediction failed: {e}")
+            
     return {
         "success": True,
         "pixel_area": float(total_pixel_area),
         "image_base64": f"data:image/jpeg;base64,{img_base64}",
         "zones": zones_list,
-        "is_single_class_model": (len(model.names) == 1)
+        "is_single_class_model": (len(model.names) == 1),
+        "prediction": pred_data
     }

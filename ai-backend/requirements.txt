@@ -7,3 +7,6 @@ torchvision
 ultralytics
 opencv-python-headless
 pydantic
+
+timm>=1.0,<2
+scikit-learn>=1.5,<2
