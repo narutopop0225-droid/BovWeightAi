@@ -236,13 +236,14 @@ function ScanContent() {
         // 4. Set results (combining AI area with regression mock for now)
         setResult({
           animalType: selectedType, 
-          weight: data.pixel_area > 0 ? (data.pixel_area * 0.005).toFixed(1) : "425.1",
-          aiGirth: "150.0",
-          height: "145.5",
-          accuracy: "98.3",
-          price: "22,500",
+          weight: data.prediction ? data.prediction.kg : (data.pixel_area > 0 ? (data.pixel_area * 0.005).toFixed(1) : "425.1"),
+          aiGirth: data.prediction && data.prediction.measurements && data.prediction.measurements.length_cm ? data.prediction.measurements.length_cm.value : "150.0",
+          height: data.prediction && data.prediction.measurements && data.prediction.measurements.height_cm ? data.prediction.measurements.height_cm.value : "145.5",
+          accuracy: data.prediction && data.prediction.typical_error_kg ? ((1 - (data.prediction.typical_error_kg / data.prediction.kg)) * 100).toFixed(1) : "98.3",
+          price: "22,500", // Will still be mocked or calculated later
           pixelArea: data.pixel_area,
-          zones: data.zones
+          zones: data.zones,
+          prediction: data.prediction
         });
       }
     } catch (error) {
