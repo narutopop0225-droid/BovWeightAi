@@ -264,8 +264,8 @@ function ScanContent() {
     }
   };
 
-  // User's formula: Y = 4.447 x HG - 390.2
-  const calculatedWeight = realGirth ? ((4.447 * Number(realGirth)) - 390.2).toFixed(2) : "-";
+  // User's formula: BW = 5.854HG - 595.98
+  const calculatedWeight = realGirth ? ((5.854 * Number(realGirth)) - 595.98).toFixed(2) : "-";
   const weightDiff = realGirth && result ? (Number(calculatedWeight) - Number(result.weight)).toFixed(2) : "-";
   const diffNumber = Number(weightDiff);
 
