@@ -1,5 +1,6 @@
 "use client";
 
+import { calculateManualWeight } from "@/utils/weightCalculator";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -207,7 +208,7 @@ export default function AnimalHistoryPage() {
   const deletedHistory = computedHistory.filter((h: any) => h.isDeleted);
 
   const chartData = [...activeHistory].reverse().map((h: any) => {
-    const calWeight = h.realGirth ? Number((Math.pow(Number(h.realGirth), 2) / 50).toFixed(1)) : null;
+    const calWeight = h.realGirth ? calculateManualWeight(h.realGirth, animal.type) : null;
     return {
       name: `ครั้งที่ ${h.attempt}`,
       date: h.date,
@@ -219,7 +220,7 @@ export default function AnimalHistoryPage() {
   });
 
   const latestRecord = activeHistory[0];
-  const latestCalWeight = latestRecord?.realGirth ? Number((Math.pow(Number(latestRecord.realGirth), 2) / 50).toFixed(1)) : null;
+  const latestCalWeight = latestRecord?.realGirth ? calculateManualWeight(latestRecord.realGirth, animal.type) : null;
   const latestActiveScanImage = activeHistory.find((h: any) => h.scanImage)?.scanImage;
   const displayImage = latestActiveScanImage || animal.image;
 
@@ -453,7 +454,7 @@ export default function AnimalHistoryPage() {
 
           <div className="space-y-4 relative before:absolute before:inset-0 before:ml-[23px] before:w-0.5 before:bg-emerald-100">
             {activeHistory.map((record: any) => {
-              const calWeight = record.realGirth ? (Math.pow(Number(record.realGirth), 2) / 50).toFixed(1) : "-";
+              const calWeight = record.realGirth ? calculateManualWeight(record.realGirth, animal.type)?.toFixed(1) || "-" : "-";
               
               return (
               <div key={record.attempt} className="relative flex items-start group">

@@ -1,5 +1,6 @@
 "use client";
 
+import { calculateManualWeight } from "@/utils/weightCalculator";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Search, PawPrint, Plus, MoreVertical, Edit3, Save, X, Trash2, Star, Activity, Calendar } from "lucide-react";
@@ -36,7 +37,7 @@ export default function AnimalsPage() {
             isFavorite: a.isFavorite || (a.history && a.history.some((h: any) => h.isFavorite)) || false,
             latestWeight: a.history && a.history.length > 0 
               ? (a.history[0].realGirth 
-                  ? Number((Math.pow(Number(a.history[0].realGirth), 2) / 50).toFixed(1)) 
+                  ? calculateManualWeight(a.history[0].realGirth, a.type)
                   : (a.history[0].realWeight || a.history[0].aiWeight)) 
               : "-",
             lastScanned: a.history && a.history.length > 0 ? a.history[0].date : "-"
@@ -65,7 +66,7 @@ export default function AnimalsPage() {
           isFavorite: hasFav,
           latestWeight: activeMeasurements.length > 0 
             ? (activeMeasurements[0].realGirth 
-                ? Number((Math.pow(Number(activeMeasurements[0].realGirth), 2) / 50).toFixed(1)) 
+                ? calculateManualWeight(activeMeasurements[0].realGirth, a.type)
                 : (activeMeasurements[0].realWeight || activeMeasurements[0].aiWeight)) 
             : "-",
           lastScanned: activeMeasurements.length > 0 ? activeMeasurements[0].date : "-"

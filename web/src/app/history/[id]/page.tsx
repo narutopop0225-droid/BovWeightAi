@@ -1,5 +1,6 @@
 "use client";
 
+import { calculateManualWeight } from "@/utils/weightCalculator";
 import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -49,8 +50,8 @@ export default function HistoryDetailPage() {
     };
   }
 
-  // Mock calculation: (Girth^2) / 50 
-  const calculatedWeight = realGirth ? (Math.pow(Number(realGirth), 2) / 50).toFixed(1) : "-";
+  // Calculation using correct formulas
+  const calculatedWeight = realGirth ? calculateManualWeight(realGirth, record.type)?.toFixed(1) || "-" : "-";
   const weightDiff = realGirth ? (Number(calculatedWeight) - record.aiWeight).toFixed(1) : "-";
   const diffNumber = Number(weightDiff);
 

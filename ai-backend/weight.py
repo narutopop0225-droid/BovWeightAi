@@ -26,7 +26,7 @@ import torch.nn as nn
 from PIL import Image
 from torchvision import transforms
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent
 # A model set is a folder of backbone .pth files plus an ensemble sub-folder
 # (manifest + heads). Switch sets with env vars, no rebuild:
 #   cattle only (2026-09-27): WEIGHT_DIR=predict_weight     WEIGHT_ENSEMBLE=ensemble
