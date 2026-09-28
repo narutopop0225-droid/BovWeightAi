@@ -264,8 +264,20 @@ function ScanContent() {
     }
   };
 
-  // User's formula: BW = 5.854HG - 595.98
-  const calculatedWeight = realGirth ? ((5.854 * Number(realGirth)) - 595.98).toFixed(2) : "-";
+  // User's formula: 
+  // Cow: BW = 5.854HG - 595.98
+  // Buffalo: Y = 0.0228x² - 2.7061x + 108.62
+  let calculatedWeightStr = "-";
+  if (realGirth) {
+    const x = Number(realGirth);
+    const type = result?.animalType || selectedType;
+    if (type === "กระบือ") {
+      calculatedWeightStr = ((0.0228 * x * x) - (2.7061 * x) + 108.62).toFixed(2);
+    } else {
+      calculatedWeightStr = ((5.854 * x) - 595.98).toFixed(2);
+    }
+  }
+  const calculatedWeight = calculatedWeightStr;
   const weightDiff = realGirth && result ? (Number(calculatedWeight) - Number(result.weight)).toFixed(2) : "-";
   const diffNumber = Number(weightDiff);
 
