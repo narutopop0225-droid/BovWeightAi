@@ -9,3 +9,6 @@ services:
     volumes:
       - ./ai-backend:/app
       - ./web/Model:/app/Model
+    environment:
+      - WEIGHT_DIR=predict_weight_v2
+      - WEIGHT_ENSEMBLE=ensemble_cowbuff
